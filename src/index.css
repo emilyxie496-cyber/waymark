@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Edit brand colours / font stack here.
+  Inter is used only if installed locally; otherwise the system sans-serif
+  stack is used, so the demo never depends on a remote font.
+*/
+@theme {
+  --font-sans: "Inter", "InterVariable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #6d28d9;
+  --color-brand-700: #5b21b6;
+  --color-brand-800: #4c1d95;
+  --color-brand-900: #2e1065;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-slate-700 antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  /* Keep anchored sections clear of the sticky header */
+  [id] {
+    scroll-margin-top: 5.5rem;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  dialog::backdrop {
+    background: rgb(15 23 42 / 0.45);
+  }
+  input[type="range"] {
+    accent-color: var(--color-brand-700);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print / Save as PDF: only the report is printed */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  body {
+    background: #fff;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+}
