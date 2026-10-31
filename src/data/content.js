@@ -234,3 +234,31 @@ export const DIALOGS = {
     ],
   },
 }
+
+/*
+  Scroll-story scenes on the homepage (visual storytelling only — no new
+  product claims). Scene visuals live in src/components/trade-visuals/.
+*/
+export const STORY_SCENES = [
+  {
+    kicker: 'Ocean freight',
+    title: 'Weeks at sea between order and arrival.',
+    body: 'Long ocean legs mean purchasing decisions are made well before goods land — and conditions can change on the way.',
+  },
+  {
+    kicker: 'Transportation networks',
+    title: 'Every hand-off adds time and cost.',
+    body: 'Ocean, rail and air connect at ports and hubs. Each link carries its own freight cost and lead time.',
+  },
+  {
+    kicker: 'Uncertainty',
+    title: 'When one link shifts, the plan moves with it.',
+    body: 'A slower lane or a cost change ripples into landed cost and stock cover. Waymark lets you test those shifts as hypothetical scenarios.',
+    note: 'Illustrative route change — not a real event or forecast.',
+  },
+  {
+    kicker: 'Business clarity',
+    title: 'From a short questionnaire to options you can compare.',
+    body: 'Build a preliminary profile, explore what-if scenarios and compare practical responses — with every assumption visible.',
+  },
+]

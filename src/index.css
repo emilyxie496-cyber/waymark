@@ -1,23 +1,60 @@
 @import "tailwindcss";
 
 /*
-  Design tokens. Edit brand colours / font stack here.
-  Inter is used only if installed locally; otherwise the system sans-serif
-  stack is used, so the demo never depends on a remote font.
+  Design tokens — "The Living Global Supply Chain".
+  Fonts are bundled locally via @fontsource (imported in main.jsx), so the
+  demo never depends on a remote font service.
 */
 @theme {
-  --font-sans: "Inter", "InterVariable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Manrope Variable", "Manrope", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #6d28d9;
-  --color-brand-700: #5b21b6;
-  --color-brand-800: #4c1d95;
-  --color-brand-900: #2e1065;
+  /* Named palette */
+  --color-midnight: #071b30;
+  --color-navy: #102a43;
+  --color-ocean: #176b9a;
+  --color-teal: #14b8a6;
+  --color-aqua: #5eead4;
+  --color-ice: #f5fafc;
+  --color-mist: #e8f0f4;
+  --color-sun: #f4b860;
+
+  /*
+    "brand" scale used across components (ocean → teal).
+    700 is the primary action colour (white text passes WCAG AA).
+  */
+  --color-brand-50: #eefaf9;
+  --color-brand-100: #d5f3ef;
+  --color-brand-200: #a9e7df;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2fc7b6;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #1a7fa8;
+  --color-brand-700: #176b9a;
+  --color-brand-800: #12547a;
+  --color-brand-900: #102a43;
+
+  --animate-fade-up: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.35s ease-out both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 @layer base {
@@ -25,23 +62,91 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-white text-slate-700 antialiased;
-    font-feature-settings: "cv11", "ss01";
+    @apply bg-ice text-slate-700 antialiased;
   }
-  /* Keep anchored sections clear of the sticky header */
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
   [id] {
     scroll-margin-top: 5.5rem;
   }
   :focus-visible {
-    outline: 2px solid var(--color-brand-600);
+    outline: 2px solid var(--color-teal);
     outline-offset: 2px;
     border-radius: 6px;
   }
   dialog::backdrop {
-    background: rgb(15 23 42 / 0.45);
+    background: rgb(7 27 48 / 0.6);
+    backdrop-filter: blur(3px);
   }
   input[type="range"] {
     accent-color: var(--color-brand-700);
+  }
+}
+
+@layer components {
+  /* Scroll reveal: only hidden once JS has confirmed it can reveal it again (see useReveal). */
+  [data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  /* Animated dashed route lines (SVG) */
+  .route-flow {
+    stroke-dasharray: 6 8;
+    animation: route-flow 1.6s linear infinite;
+  }
+  @keyframes route-flow {
+    to {
+      stroke-dashoffset: -28;
+    }
+  }
+
+  /* Gentle bob for the ship illustration */
+  .bob {
+    animation: bob 4s ease-in-out infinite;
+  }
+  @keyframes bob {
+    50% {
+      transform: translateY(-3px) rotate(-0.6deg);
+    }
+  }
+
+  /* Soft pulse for map nodes */
+  .node-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: node-pulse 2.4s ease-out infinite;
+  }
+  @keyframes node-pulse {
+    0% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2.6);
+    }
+  }
+
+  /* Fine grain on dark cinematic sections */
+  .ocean-backdrop {
+    background:
+      radial-gradient(80% 60% at 70% 30%, rgb(23 107 154 / 0.35), transparent 70%),
+      radial-gradient(50% 40% at 10% 90%, rgb(20 184 166 / 0.14), transparent 70%),
+      var(--color-midnight);
   }
 }
 
@@ -56,15 +161,26 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
-/* Print / Save as PDF: only the report is printed */
+/* Print / Save as PDF: only the report is printed, everything visible */
 @media print {
   @page {
     margin: 14mm;
   }
   body {
     background: #fff;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  * {
+    animation: none !important;
   }
   .print-avoid-break {
     break-inside: avoid;

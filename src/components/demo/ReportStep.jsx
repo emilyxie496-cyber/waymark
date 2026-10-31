@@ -14,6 +14,8 @@ import {
 import { money, percent } from '../../utils/format.js'
 import { Button, Icon, Logo } from '../ui.jsx'
 import { StepNav } from './DemoWorkspace.jsx'
+import StrategyChart from './StrategyChart.jsx'
+import { Reveal } from '../motion/Motion.jsx'
 
 export default function ReportStep({ answers, model, scenario, strategy, isSample, headingRef, onBack }) {
   const { scenario: sc, strategies, lowestCostId, profile, resolved, altSupplier } = model
@@ -54,8 +56,8 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between print:hidden">
         <div>
-          <p className="text-sm font-semibold text-brand-700">Step 5 · Summary report</p>
-          <h1 ref={headingRef} tabIndex={-1} className="focus:outline-none mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <p className="text-sm font-semibold tracking-wide text-brand-700 uppercase">Step 5 · Summary report</p>
+          <h1 ref={headingRef} tabIndex={-1} className="mt-1 text-3xl font-bold text-navy focus:outline-none sm:text-4xl">
             Your preliminary scenario report
           </h1>
         </div>
@@ -64,11 +66,12 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
         </Button>
       </div>
 
-      <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10 print:border-0 print:p-0 print:shadow-none">
-        <header className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-start sm:justify-between">
+      <article className="relative overflow-hidden rounded-3xl border border-mist bg-white p-6 shadow-[0_20px_50px_-24px_rgba(16,42,67,.25)] sm:p-12 print:overflow-visible print:rounded-none print:border-0 print:p-0 print:shadow-none">
+        <span className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-teal via-ocean to-navy [print-color-adjust:exact] print:hidden" aria-hidden="true" />
+        <header className="flex flex-col gap-4 border-b border-mist pb-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <Logo />
-            <h2 className="mt-4 text-2xl font-bold text-slate-900">
+            <h2 className="mt-6 max-w-2xl text-3xl leading-tight font-extrabold text-navy sm:text-4xl">
               Supply-chain scenario report{isSample ? ` — ${SAMPLE_COMPANY.name} (fictional)` : ''}
             </h2>
             <p className="mt-1 text-sm text-slate-500">
@@ -130,6 +133,9 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
               </tbody>
             </table>
           </div>
+          <div className="mt-5 rounded-2xl bg-ice p-4 [print-color-adjust:exact]">
+            <StrategyChart strategies={strategies} lowestCostId={lowestCostId} />
+          </div>
           <p className="mt-2 text-xs text-slate-500">
             All three responses use the same scenario, inputs and 12-month period. Lowest cost is not automatically the
             best choice — weigh timing, feasibility and concentration risk.
@@ -184,7 +190,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
           </ReportSection>
         </div>
 
-        <footer className="mt-10 border-t border-slate-200 pt-4 text-xs text-slate-500">
+        <footer className="mt-12 border-t border-mist pt-4 text-xs text-slate-500">
           Waymark hackathon prototype · Illustrative data · Not financial, legal, customs or compliance advice.
         </footer>
       </article>
@@ -196,9 +202,12 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
 
 function ReportSection({ title, children, className = '' }) {
   return (
-    <section className={`print-avoid-break ${className}`}>
-      <h3 className="mb-3 text-sm font-bold tracking-wide text-brand-800 uppercase">{title}</h3>
+    <Reveal as="section" className={`print-avoid-break ${className}`}>
+      <div className="mb-4 flex items-center gap-3">
+        <h3 className="shrink-0 text-sm font-bold tracking-[0.08em] text-ocean uppercase">{title}</h3>
+        <span className="h-px flex-1 bg-gradient-to-r from-brand-200 to-transparent" aria-hidden="true" />
+      </div>
       {children}
-    </section>
+    </Reveal>
   )
 }

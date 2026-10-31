@@ -4,6 +4,14 @@ import { Badge, Icon } from '../ui.jsx'
 import { Panel, StepHeading, StepNav } from './DemoWorkspace.jsx'
 import ScenarioControls from './ScenarioControls.jsx'
 import StrategyChart, { COMPONENT_META } from './StrategyChart.jsx'
+import { AnimatedNumber } from '../motion/Motion.jsx'
+
+// Visual identity per response (colour only — no ranking implied)
+const ACCENT = {
+  current: { bar: 'bg-slate-400', icon: 'layers', tint: 'text-slate-600 bg-slate-100' },
+  alternative: { bar: 'bg-gradient-to-r from-teal to-ocean', icon: 'globe', tint: 'text-ocean bg-brand-50' },
+  expedited: { bar: 'bg-sun', icon: 'ship', tint: 'text-amber-800 bg-amber-50' },
+}
 
 export default function StrategyStep({
   model,
@@ -109,11 +117,11 @@ export default function StrategyStep({
                       ))}
                     </tr>
                   ))}
-                  <tr className="border-b border-slate-200 bg-brand-50/50">
-                    <th scope="row" className="py-2.5 pr-3 text-left font-bold text-slate-900">Total additional cost</th>
+                  <tr className="border-b border-mist bg-brand-50/60">
+                    <th scope="row" className="py-2.5 pr-3 text-left font-bold text-navy">Total additional cost</th>
                     {strategies.map((s) => (
-                      <td key={s.id} className="py-2.5 pr-3 font-bold text-slate-900">
-                        {money(s.total)}
+                      <td key={s.id} className="py-2.5 pr-3 font-bold text-navy">
+                        <AnimatedNumber value={s.total} />
                       </td>
                     ))}
                   </tr>
@@ -140,8 +148,22 @@ export default function StrategyStep({
 
           <div className="grid gap-4 md:grid-cols-3">
             {strategies.map((s) => (
-              <section key={s.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <h3 className="font-bold text-slate-900">{s.name}</h3>
+              <section
+                key={s.id}
+                className="relative overflow-hidden rounded-3xl border border-mist bg-white p-5 pt-6 shadow-[0_10px_30px_-14px_rgba(16,42,67,.14)] transition-shadow duration-300 hover:shadow-[0_16px_40px_-16px_rgba(16,42,67,.25)]"
+              >
+                <span className={`absolute inset-x-0 top-0 h-1.5 ${ACCENT[s.id].bar}`} aria-hidden="true" />
+                <div className="flex items-start justify-between gap-2">
+                  <span className={`inline-flex h-9 w-9 items-center justify-center rounded-xl ${ACCENT[s.id].tint}`}>
+                    <Icon name={ACCENT[s.id].icon} className="h-4.5 w-4.5" />
+                  </span>
+                  {s.id === lowestCostId && <Badge tone="emerald">Lowest est. cost</Badge>}
+                </div>
+                <h3 className="mt-3 font-bold text-navy">{s.name}</h3>
+                <p className="font-display mt-1 text-2xl font-bold text-navy tabular-nums">
+                  <AnimatedNumber value={s.total} />
+                  <span className="ml-1 text-xs font-medium text-slate-500">est. / 12 mo</span>
+                </p>
                 {s.supplierName && <p className="text-xs font-medium text-amber-700">{s.supplierName}</p>}
                 <p className="mt-1 text-sm text-slate-600">{s.summary}</p>
                 <ul className="mt-3 space-y-1.5 text-sm text-slate-600">

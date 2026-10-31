@@ -1,3 +1,5 @@
+import { useId } from 'react'
+
 // Small shared UI pieces: icons, buttons, badges, logo, section headings.
 
 const ICONS = {
@@ -40,10 +42,14 @@ export function Icon({ name, className = 'h-5 w-5', strokeWidth = 1.8 }) {
 
 const BUTTON_VARIANTS = {
   primary:
-    'bg-brand-700 text-white shadow-sm shadow-brand-900/10 hover:bg-brand-800 active:bg-brand-900 disabled:bg-slate-300 disabled:shadow-none',
-  secondary: 'bg-white text-slate-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 hover:ring-slate-400',
-  ghost: 'text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+    'bg-brand-700 text-white shadow-sm shadow-brand-900/20 hover:bg-brand-800 hover:shadow-md active:bg-brand-900 disabled:bg-slate-300 disabled:shadow-none',
+  secondary: 'bg-white text-navy ring-1 ring-inset ring-slate-300 hover:bg-ice hover:ring-slate-400',
+  ghost: 'text-slate-700 hover:bg-mist hover:text-navy',
   soft: 'bg-brand-50 text-brand-800 hover:bg-brand-100',
+  // On dark, cinematic sections
+  glow: 'bg-teal text-midnight shadow-lg shadow-teal/25 hover:bg-aqua hover:shadow-aqua/30',
+  glass: 'bg-white/8 text-white ring-1 ring-inset ring-white/25 backdrop-blur hover:bg-white/15 hover:ring-white/40',
+  ghostDark: 'text-slate-200 hover:bg-white/10 hover:text-white',
 }
 const BUTTON_SIZES = {
   sm: 'h-9 px-3 text-sm gap-1.5',
@@ -55,7 +61,7 @@ export function Button({ variant = 'primary', size = 'md', className = '', child
   return (
     <button
       type="button"
-      className={`inline-flex items-center justify-center rounded-lg font-semibold whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed ${BUTTON_VARIANTS[variant]} ${BUTTON_SIZES[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl font-semibold whitespace-nowrap transition-[background-color,box-shadow,color,transform] duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100 [&>svg:last-child]:transition-transform hover:[&>svg:last-child]:translate-x-0.5 ${BUTTON_VARIANTS[variant]} ${BUTTON_SIZES[size]} ${className}`}
       {...props}
     >
       {children}
@@ -70,6 +76,7 @@ const BADGE_TONES = {
   emerald: 'bg-emerald-50 text-emerald-800 ring-emerald-200',
   sky: 'bg-sky-50 text-sky-800 ring-sky-200',
   rose: 'bg-rose-50 text-rose-800 ring-rose-200',
+  dark: 'bg-white/8 text-aqua ring-aqua/30 backdrop-blur',
 }
 
 export function Badge({ tone = 'brand', className = '', children }) {
@@ -82,22 +89,24 @@ export function Badge({ tone = 'brand', className = '', children }) {
   )
 }
 
-export function Logo({ className = '' }) {
+/** tone="light" for dark backgrounds. */
+export function Logo({ className = '', tone = 'dark' }) {
+  const light = tone === 'light'
+  const gid = 'logo' + useId().replace(/[^a-zA-Z0-9]/g, '')
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <svg viewBox="0 0 32 32" className="h-8 w-8" aria-hidden="true">
-        <rect width="32" height="32" rx="8" className="fill-brand-700" />
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#14b8a6" />
+            <stop offset="1" stopColor="#176b9a" />
+          </linearGradient>
+        </defs>
+        <rect width="32" height="32" rx="9" fill={`url(#${gid})`} />
         <path d="M16 6c-4.4 0-8 3.4-8 7.7 0 5.6 8 12.3 8 12.3s8-6.7 8-12.3C24 9.4 20.4 6 16 6Z" fill="#fff" />
-        <path
-          d="m12.5 13.5 2.5 2.5 4.5-4.5"
-          className="stroke-brand-700"
-          strokeWidth="2.2"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="m12.5 13.5 2.5 2.5 4.5-4.5" stroke="#176b9a" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-      <span className="text-xl font-extrabold tracking-tight text-slate-900">Waymark</span>
+      <span className={`font-display text-xl font-extrabold tracking-tight ${light ? 'text-white' : 'text-navy'}`}>Waymark</span>
     </span>
   )
 }
@@ -106,7 +115,7 @@ export function SectionHeading({ eyebrow, title, children, center = false, id })
   return (
     <div className={`max-w-2xl ${center ? 'mx-auto text-center' : ''}`}>
       {eyebrow && <p className="text-sm font-semibold tracking-wide text-brand-700 uppercase">{eyebrow}</p>}
-      <h2 id={id} className="mt-2 text-3xl font-bold tracking-tight text-balance text-slate-900 sm:text-4xl">
+      <h2 id={id} className="mt-2 text-3xl font-bold text-balance text-navy sm:text-4xl lg:text-[2.6rem]">
         {title}
       </h2>
       {children && <p className="mt-4 text-lg text-pretty text-slate-600">{children}</p>}

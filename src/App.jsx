@@ -5,6 +5,7 @@ import Hero from './components/Hero.jsx'
 import InfoDialog from './components/InfoDialog.jsx'
 import { Audience, Faq, Newsletter, Personas } from './components/LandingSections.jsx'
 import Navbar from './components/Navbar.jsx'
+import StorySection from './components/trade-visuals/StorySection.jsx'
 import DemoWorkspace from './components/demo/DemoWorkspace.jsx'
 
 /*
@@ -53,6 +54,7 @@ export default function App() {
       <Navbar onOpenDialog={setDialogKey} />
       <main id="main">
         <Hero onOpenDemo={openDemo} />
+        <StorySection onOpenDemo={openDemo} />
         <Features onOpenDemo={openDemo} />
         <Audience />
         <Personas />

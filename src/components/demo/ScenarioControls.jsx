@@ -10,7 +10,7 @@ export default function ScenarioControls({ scenario, setScenario, onReset, compa
   return (
     <section
       aria-labelledby="scenario-controls-title"
-      className="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm ring-4 ring-brand-50 sm:p-6"
+      className="rounded-3xl border border-brand-200 bg-white p-5 shadow-[0_10px_30px_-14px_rgba(16,42,67,.16)] ring-4 ring-brand-50 sm:p-6"
     >
       <div className="flex items-center justify-between gap-2">
         <h2 id="scenario-controls-title" className="font-bold text-slate-900">

@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { FAQS, PERSONAS } from '../data/content.js'
 import { isValidEmail } from '../utils/validation.js'
+import { Reveal } from './motion/Motion.jsx'
 import { Badge, Button, Icon, SectionHeading } from './ui.jsx'
 
 export function Audience() {
@@ -11,7 +12,7 @@ export function Audience() {
           We begin with importing SMEs that don't have a dedicated supply-chain risk team. Exporters come later.
         </SectionHeading>
         <div className="mt-12 grid gap-4 md:grid-cols-2">
-          <article className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+          <Reveal as="article" className="rounded-3xl border border-mist bg-white p-7 shadow-[0_12px_32px_-12px_rgba(16,42,67,.12)]">
             <div className="flex items-center justify-between">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
                 <Icon name="ship" />
@@ -32,8 +33,8 @@ export function Audience() {
                 </li>
               ))}
             </ul>
-          </article>
-          <article className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-7">
+          </Reveal>
+          <Reveal as="article" delay={120} className="rounded-3xl border border-dashed border-slate-300 bg-mist/40 p-7">
             <div className="flex items-center justify-between">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
                 <Icon name="globe" />
@@ -54,7 +55,7 @@ export function Audience() {
               ))}
             </ul>
             <p className="mt-4 text-sm text-slate-500">Not available today — shown to explain where the concept could go.</p>
-          </article>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -63,14 +64,14 @@ export function Audience() {
 
 export function Personas() {
   return (
-    <section className="bg-slate-50/70 py-20 sm:py-28" aria-labelledby="personas-title">
+    <section className="bg-white py-20 sm:py-28" aria-labelledby="personas-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading id="personas-title" eyebrow="People who plan" title="Built around the people running supply chains.">
           Sample personas that shaped the prototype — not real customers or testimonials.
         </SectionHeading>
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PERSONAS.map((p) => (
-            <li key={p.role} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <Reveal as="li" delay={PERSONAS.indexOf(p) * 90} key={p.role} className="flex flex-col rounded-3xl border border-mist bg-ice p-6 transition-shadow">
               <div className="flex items-center justify-between">
                 <span
                   className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold ${p.tone}`}
@@ -83,7 +84,7 @@ export function Personas() {
               <h3 className="mt-4 font-bold text-slate-900">{p.role}</h3>
               <p className="mt-2 text-sm font-medium text-brand-800">“{p.question}”</p>
               <p className="mt-2 text-sm text-slate-600">{p.needs}</p>
-            </li>
+            </Reveal>
           ))}
         </ul>
       </div>
@@ -98,7 +99,7 @@ export function Faq() {
     <section id="faq" className="py-20 sm:py-28" aria-labelledby="faq-title">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <SectionHeading id="faq-title" eyebrow="FAQ" title="Common questions" center />
-        <div className="mt-10 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white">
+        <div className="mt-10 divide-y divide-mist overflow-hidden rounded-3xl border border-mist bg-white shadow-[0_12px_32px_-12px_rgba(16,42,67,.10)]">
           {FAQS.map((f, i) => {
             const open = openIndex === i
             const btnId = `${baseId}-q${i}`
@@ -160,14 +161,14 @@ export function Newsletter() {
 
   return (
     <section id="newsletter" className="px-4 pb-20 sm:px-6 sm:pb-28 lg:px-8" aria-labelledby="newsletter-title">
-      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 px-6 py-12 text-white sm:px-12 sm:py-14">
-        <div aria-hidden="true" className="absolute -right-20 -bottom-24 h-64 w-64 rounded-full bg-brand-400/30 blur-3xl" />
+      <div className="ocean-backdrop relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] px-6 py-12 text-white sm:px-12 sm:py-14">
+        <div aria-hidden="true" className="absolute -right-20 -bottom-24 h-64 w-64 rounded-full bg-teal/25 blur-3xl" />
         <div className="relative grid items-center gap-8 lg:grid-cols-2">
           <h2 id="newsletter-title" className="text-2xl font-bold tracking-tight text-balance sm:text-3xl">
             Get the latest trade and compliance insights delivered to your inbox
           </h2>
           <form onSubmit={submit} noValidate>
-            <label htmlFor={inputId} className="text-sm font-medium text-brand-100">
+            <label htmlFor={inputId} className="text-sm font-medium text-aqua">
               Work email
             </label>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row">
@@ -183,16 +184,16 @@ export function Newsletter() {
                 aria-invalid={status.type === 'error'}
                 aria-describedby={`${inputId}-msg`}
                 placeholder="name@company.ca"
-                className="h-12 flex-1 rounded-lg border-0 bg-white px-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-300 focus:outline-none"
+                className="h-12 flex-1 rounded-lg border-0 bg-white px-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-aqua focus:outline-none"
               />
-              <Button type="submit" size="lg" variant="secondary" className="!ring-0">
+              <Button type="submit" size="lg" variant="glow">
                 Subscribe
               </Button>
             </div>
             <p
               id={`${inputId}-msg`}
               aria-live="polite"
-              className={`mt-3 min-h-5 text-sm ${status.type === 'error' ? 'text-rose-200' : 'text-brand-100'}`}
+              className={`mt-3 min-h-5 text-sm ${status.type === 'error' ? 'text-rose-200' : 'text-slate-300'}`}
             >
               {status.msg || 'Demo form — nothing is sent or stored.'}
             </p>

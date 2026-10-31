@@ -73,7 +73,7 @@ export default function Questionnaire({
           e.preventDefault()
           next()
         }}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8"
+        className="rounded-3xl border border-mist bg-white p-5 shadow-[0_10px_30px_-14px_rgba(16,42,67,.16)] sm:p-8"
         aria-describedby="q-intro"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -82,13 +82,20 @@ export default function Questionnaire({
           </p>
           <div className="flex gap-1.5" aria-hidden="true">
             {QUESTIONNAIRE_STEPS.map((s, i) => (
-              <span key={s.id} className={`h-1.5 w-10 rounded-full ${i <= qStep ? 'bg-brand-600' : 'bg-slate-200'}`} />
+              <span key={s.id} className="h-1.5 w-10 overflow-hidden rounded-full bg-mist">
+                <span className={`block h-full rounded-full bg-gradient-to-r from-teal to-ocean transition-[width] duration-500 ease-out ${i <= qStep ? 'w-full' : 'w-0'}`} />
+              </span>
             ))}
           </div>
         </div>
-        <h1 ref={headingRef} tabIndex={-1} className="focus:outline-none mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          {['What do you import?', 'Where does it come from?', 'Roughly how much do you spend?'][qStep]}
-        </h1>
+        <div className="mt-3 flex items-center gap-3">
+          <span key={qStep} className="inline-flex h-11 w-11 shrink-0 animate-fade-up items-center justify-center rounded-2xl bg-gradient-to-br from-teal/15 to-ocean/15 text-ocean">
+            <Icon name={['tag', 'globe', 'ship'][qStep]} className="h-5 w-5" />
+          </span>
+          <h1 ref={headingRef} tabIndex={-1} className="text-2xl font-bold text-navy focus:outline-none sm:text-3xl">
+            {['What do you import?', 'Where does it come from?', 'Roughly how much do you spend?'][qStep]}
+          </h1>
+        </div>
         <p id="q-intro" className="mt-2 text-slate-600">
           Approximate answers are fine. We never ask for documents, company names or contact details.
         </p>
@@ -99,7 +106,10 @@ export default function Questionnaire({
           </div>
         )}
 
-        <div className="mt-6 space-y-7">
+        <div
+          key={qStep}
+          className="mt-6 space-y-7 [&>*]:animate-fade-up [&>*:nth-child(2)]:[animation-delay:70ms] [&>*:nth-child(3)]:[animation-delay:140ms] [&>*:nth-child(4)]:[animation-delay:210ms] [&>*:nth-child(5)]:[animation-delay:280ms]"
+        >
           {qStep === 0 && (
             <>
               <SelectField
@@ -206,7 +216,7 @@ export default function Questionnaire({
                 error={errors.freightSpend}
                 cols="grid-cols-2 sm:grid-cols-4"
               />
-              <p className="flex gap-2 rounded-lg bg-brand-50/70 p-3 text-sm text-brand-900">
+              <p className="flex gap-2 rounded-xl bg-brand-50 p-3 text-sm text-navy">
                 <Icon name="info" className="mt-0.5 h-4 w-4 shrink-0" />
                 For calculations we use the midpoint of each range (e.g. $1M–$5M → $3M). This assumption is shown
                 with every result.
@@ -215,7 +225,7 @@ export default function Questionnaire({
           )}
         </div>
 
-        <div className="mt-8 flex flex-col-reverse gap-2 border-t border-slate-200 pt-6 sm:flex-row sm:justify-between">
+        <div className="mt-8 flex flex-col-reverse gap-2 border-t border-mist pt-6 sm:flex-row sm:justify-between">
           <Button variant="secondary" onClick={back} disabled={qStep === 0}>
             <Icon name="arrowLeft" className="h-4 w-4" /> Back
           </Button>
@@ -227,20 +237,20 @@ export default function Questionnaire({
       </form>
 
       <aside className="space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="font-bold text-slate-900">Presenting?</h2>
-          <p className="mt-1 text-sm text-slate-600">
+        <div className="ocean-backdrop rounded-3xl p-5 text-white shadow-lg">
+          <h2 className="font-bold text-white">Presenting?</h2>
+          <p className="mt-1 text-sm text-slate-300">
             Load a fictional importer to walk through the full journey in seconds.
           </p>
-          <Button variant="soft" className="mt-4 w-full" onClick={loadSample}>
+          <Button variant="glow" className="mt-4 w-full" onClick={loadSample}>
             <Icon name="sparkles" className="h-4 w-4" /> Try sample company
           </Button>
-          {isSample && <p className="mt-2 text-center text-xs text-emerald-700">Sample loaded — press Next to continue.</p>}
-          <Button variant="ghost" className="mt-2 w-full" onClick={reset}>
+          {isSample && <p className="mt-2 text-center text-xs text-aqua">Sample loaded — press Next to continue.</p>}
+          <Button variant="ghostDark" className="mt-2 w-full" onClick={reset}>
             <Icon name="refresh" className="h-4 w-4" /> Reset answers
           </Button>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm">
+        <div className="rounded-3xl border border-mist bg-white p-5 text-sm text-slate-600">
           <Badge tone="slate">Lower-data onboarding</Badge>
           <p className="mt-3">
             Answers stay in this browser tab only and are cleared on reset. Fewer inputs reduce — but don't remove —
@@ -255,13 +265,13 @@ export default function Questionnaire({
 // ---------- Form fields ----------
 
 const inputBase =
-  'mt-1.5 h-11 w-full rounded-lg border bg-white px-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2'
+  'mt-1.5 h-11 w-full rounded-xl border bg-white transition-shadow px-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2'
 const inputState = (error) =>
-  error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200' : 'border-slate-300 focus:border-brand-600 focus:ring-brand-200'
+  error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200' : 'border-slate-300 hover:border-slate-400 focus:border-brand-700 focus:ring-brand-200'
 
 function FieldLabel({ htmlFor, label, optional, as: Tag = 'label' }) {
   return (
-    <Tag htmlFor={htmlFor} className="text-sm font-semibold text-slate-800">
+    <Tag htmlFor={htmlFor} className="text-sm font-semibold text-navy">
       {label} {optional && <span className="font-normal text-slate-500">(optional)</span>}
     </Tag>
   )
@@ -339,7 +349,7 @@ function RadioCards({ field, legend, optional, options, value, onChange, error, 
         {options.map((o, i) => (
           <label
             key={o.value}
-            className={`relative flex cursor-pointer flex-col justify-center rounded-lg border px-3 py-2.5 text-sm transition-colors has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:checked]:text-brand-900 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand-500 hover:border-brand-300 ${
+            className={`group relative flex cursor-pointer flex-col justify-center rounded-xl border bg-white px-3 py-2.5 pr-8 text-sm transition-all duration-200 hover:-translate-y-px hover:border-brand-400 hover:shadow-sm has-[:checked]:border-brand-700 has-[:checked]:bg-brand-50 has-[:checked]:text-navy has-[:checked]:shadow-[0_0_0_1px_var(--color-brand-700)] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-teal ${
               error ? 'border-rose-300' : 'border-slate-300'
             }`}
           >
@@ -353,6 +363,12 @@ function RadioCards({ field, legend, optional, options, value, onChange, error, 
               className="sr-only"
             />
             <span className="font-medium">{o.label}</span>
+            <span
+              aria-hidden="true"
+              className="absolute top-1/2 right-2.5 flex h-4 w-4 -translate-y-1/2 scale-50 items-center justify-center rounded-full bg-brand-700 text-white opacity-0 transition-all duration-200 group-has-[:checked]:scale-100 group-has-[:checked]:opacity-100"
+            >
+              <Icon name="check" className="h-3 w-3" strokeWidth={3} />
+            </span>
             {o.hint && <span className="mt-0.5 text-xs text-slate-500">{o.hint}</span>}
           </label>
         ))}

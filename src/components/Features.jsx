@@ -2,11 +2,12 @@ import { useId, useState } from 'react'
 import { suggestChapter } from '../utils/classify.js'
 import { money } from '../utils/format.js'
 import { isValidHsCode } from '../utils/validation.js'
+import { Reveal } from './motion/Motion.jsx'
 import { Badge, Button, Icon, SectionHeading } from './ui.jsx'
 
 export default function Features({ onOpenDemo }) {
   return (
-    <section id="features" className="bg-slate-50/70 py-20 sm:py-28" aria-labelledby="features-title">
+    <section id="features" className="bg-ice py-20 sm:py-28" aria-labelledby="features-title">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeading id="features-title" eyebrow="What Waymark does" title="From product profile to practical next steps">
           Three pillars of the concept. Interactive pieces work in this prototype; planned services are labelled.
@@ -25,13 +26,14 @@ export default function Features({ onOpenDemo }) {
 
 function Card({ id, className = '', children, labelledBy }) {
   return (
-    <article
+    <Reveal
+      as="article"
       id={id}
       aria-labelledby={labelledBy}
-      className={`rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7 ${className}`}
+      className={`rounded-3xl border border-mist bg-white p-6 shadow-[0_1px_2px_rgba(16,42,67,.04),0_12px_32px_-12px_rgba(16,42,67,.12)] sm:p-7 ${className}`}
     >
       {children}
-    </article>
+    </Reveal>
   )
 }
 
@@ -260,10 +262,10 @@ function JourneyCard({ onOpenDemo }) {
   return (
     <article
       aria-labelledby="journey-title"
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-800 via-brand-700 to-brand-600 p-6 text-white shadow-sm sm:p-7 lg:col-span-2"
+      className="ocean-backdrop relative overflow-hidden rounded-3xl p-6 text-white shadow-lg sm:p-7 lg:col-span-2"
     >
       <div aria-hidden="true" className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
-      <p className="text-sm font-semibold text-brand-100">The interactive demo</p>
+      <p className="text-sm font-semibold text-aqua">The interactive demo</p>
       <h3 id="journey-title" className="mt-1 text-xl font-bold">
         One journey, five steps
       </h3>
@@ -277,7 +279,7 @@ function JourneyCard({ onOpenDemo }) {
           </li>
         ))}
       </ol>
-      <Button variant="secondary" className="mt-6 w-full !ring-0" onClick={() => onOpenDemo('sample')}>
+      <Button variant="glow" className="mt-6 w-full" onClick={() => onOpenDemo('sample')}>
         Try the sample company <Icon name="arrowRight" className="h-4 w-4" />
       </Button>
     </article>

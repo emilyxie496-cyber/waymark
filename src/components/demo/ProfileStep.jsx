@@ -11,6 +11,7 @@ import {
   labelOf,
 } from '../../data/demoData.js'
 import { suggestChapter } from '../../utils/classify.js'
+import SourcingNetwork from '../trade-visuals/SourcingNetwork.jsx'
 import { Badge, Button, Icon, LevelChip } from '../ui.jsx'
 import { Panel, StepHeading, StepNav } from './DemoWorkspace.jsx'
 
@@ -61,16 +62,26 @@ export default function ProfileStep({ answers, model, isSample, headingRef, onBa
         />
       </div>
 
+      <Panel title="Sourcing network" aside={<Badge tone="slate">Schematic</Badge>} className="mt-4">
+        <SourcingNetwork answers={answers} leadTimeDays={resolved.leadTimeDays} />
+      </Panel>
+
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <Panel title="Preliminary indicators" aside={<Badge tone="slate">Rule-based</Badge>}>
           {profile.indicators.length === 0 ? (
             <p className="text-slate-600">No indicators triggered by these answers. That doesn't mean there's no risk.</p>
           ) : (
             <ul className="space-y-3">
-              {profile.indicators.map((i) => (
-                <li key={i.title} className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 p-3.5">
+              {profile.indicators.map((i, idx) => (
+                <li
+                  key={i.title}
+                  style={{ animationDelay: `${idx * 70}ms` }}
+                  className={`flex animate-fade-up items-start justify-between gap-3 rounded-xl border border-l-4 p-3.5 ${
+                    i.level === 'review' ? 'border-rose-100 border-l-rose-400 bg-rose-50/40' : 'border-amber-100 border-l-sun bg-amber-50/30'
+                  }`}
+                >
                   <div>
-                    <p className="font-semibold text-slate-900">{i.title}</p>
+                    <p className="font-semibold text-navy">{i.title}</p>
                     <p className="mt-0.5 text-sm text-slate-600">{i.detail}</p>
                   </div>
                   <LevelChip level={i.level} />
@@ -141,9 +152,9 @@ export default function ProfileStep({ answers, model, isSample, headingRef, onBa
 
 function SummaryCard({ icon, title, rows }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="flex items-center gap-2 font-bold text-slate-900">
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+    <section className="rounded-3xl border border-mist bg-white p-5 shadow-[0_10px_30px_-14px_rgba(16,42,67,.14)]">
+      <h2 className="flex items-center gap-2 font-bold text-navy">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-teal/15 to-ocean/15 text-ocean">
           <Icon name={icon} className="h-4 w-4" />
         </span>
         {title}
