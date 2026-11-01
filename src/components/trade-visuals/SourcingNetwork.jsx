@@ -28,14 +28,14 @@ export default function SourcingNetwork({ answers, leadTimeDays }) {
       <svg viewBox="0 0 560 220" className="mx-auto h-auto w-full max-w-2xl" role="img" aria-label={`Schematic: ${n === 1 ? 'one main supplier' : `${n} supplier nodes`} in ${region} supplying your business, about ${leadTimeDays} days lead time.`}>
         <defs>
           <linearGradient id={`ln${uid}`} x1="0" x2="1">
-            <stop offset="0" stopColor="#14b8a6" />
-            <stop offset="1" stopColor="#176b9a" />
+            <stop offset="0" stopColor="#8b5cf6" />
+            <stop offset="1" stopColor="#5b21b6" />
           </linearGradient>
         </defs>
-        <rect width="560" height="220" rx="20" fill="#071b30" />
+        <rect width="560" height="220" rx="20" fill="#150a2e" />
         {/* region cluster */}
-        <rect x="40" y="22" width="190" height="176" rx="16" fill="rgba(94,234,212,.06)" stroke="rgba(94,234,212,.25)" strokeDasharray="4 5" />
-        <text x="56" y="44" fill="#5eead4" fontSize="12" fontWeight="700" letterSpacing=".06em">
+        <rect x="40" y="22" width="190" height="176" rx="16" fill="rgba(196,181,253,.06)" stroke="rgba(196,181,253,.25)" strokeDasharray="4 5" />
+        <text x="56" y="44" fill="#c4b5fd" fontSize="12" fontWeight="700" letterSpacing=".06em">
           {region.toUpperCase()}
         </text>
         <text x="56" y="188" fill="#94a3b8" fontSize="11">
@@ -48,8 +48,8 @@ export default function SourcingNetwork({ answers, leadTimeDays }) {
           return (
             <g key={i}>
               <path d={d} fill="none" stroke={`url(#ln${uid})`} strokeOpacity=".35" strokeWidth={n === 1 ? 6 : 2.5} />
-              <path d={d} fill="none" stroke="#5eead4" strokeWidth={n === 1 ? 2.5 : 1.5} className="route-flow" />
-              <circle cx={s.x} cy={s.y} r={n === 1 ? 11 : 8} fill="#e8f0f4" stroke="#14b8a6" strokeWidth="2.5" />
+              <path d={d} fill="none" stroke="#c4b5fd" strokeWidth={n === 1 ? 2.5 : 1.5} className="route-flow" />
+              <circle cx={s.x} cy={s.y} r={n === 1 ? 11 : 8} fill="#ece9f7" stroke="#8b5cf6" strokeWidth="2.5" />
             </g>
           )
         })}
@@ -65,16 +65,16 @@ export default function SourcingNetwork({ answers, leadTimeDays }) {
 
         {/* lead time label */}
         <g transform="translate(330 70)">
-          <rect x="-46" y="-14" width="92" height="24" rx="12" fill="#102a43" stroke="rgba(94,234,212,.3)" />
-          <text textAnchor="middle" y="3" fill="#f5fafc" fontSize="11.5" fontWeight="600">
+          <rect x="-46" y="-14" width="92" height="24" rx="12" fill="#1e1538" stroke="rgba(196,181,253,.3)" />
+          <text textAnchor="middle" y="3" fill="#fbfaff" fontSize="11.5" fontWeight="600">
             ~{leadTimeDays} days
           </text>
         </g>
 
         {/* your business */}
-        <circle cx={you.x} cy={you.y} r="26" fill="#f4b860" className="node-pulse" />
-        <circle cx={you.x} cy={you.y} r="20" fill="#f4b860" stroke="#071b30" strokeWidth="3" />
-        <text x={you.x} y={you.y + 46} textAnchor="middle" fill="#f5fafc" fontSize="12" fontWeight="700">
+        <circle cx={you.x} cy={you.y} r="26" fill="#f5b94a" className="node-pulse" />
+        <circle cx={you.x} cy={you.y} r="20" fill="#f5b94a" stroke="#150a2e" strokeWidth="3" />
+        <text x={you.x} y={you.y + 46} textAnchor="middle" fill="#fbfaff" fontSize="12" fontWeight="700">
           Your business
         </text>
       </svg>

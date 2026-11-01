@@ -1,6 +1,6 @@
 # Waymark 2.0
 
-**Plan. Pivot. Grow.** A map-based supply-chain decision platform for Canadian small and medium-sized businesses.
+**Plan. Pivot. Progress.** A map-based supply-chain decision platform for Canadian small and medium-sized businesses.
 
 Waymark answers one question: *how can my company make smarter supply-chain decisions while reducing financial risk, environmental impact and social harm?*
 
@@ -158,3 +158,14 @@ tests/, e2e/  Automated tests
 - **Emission factors:** `shared/emissions.js`. **Freight rates:** `src/engine/alternatives.js`.
 - **Demo companies:** `src/data/demoCompanies.js`. **HS list:** `src/data/hsCodes.js`.
 - **Landing copy:** `src/data/content.js`. **Colours:** `src/index.css`.
+
+## Merged from the team's final_version
+
+- **Full-page views:** `/company` (Our Story), `/customer`, `/tariffs` (duty-exposure worksheet, `src/utils/tariff.js`, with rates left unverified) and `/trial` (the team's trial form, which sends nothing). `/signup` stays the working sign-up with the Spawn buttons.
+- **Trade news:** the landing page reads GDELT from the browser, with Google News RSS as a fallback through `/api/google-news`, served by the Node API under `npm start` and by the Vite proxy in development.
+- **HS auto-fill:** the "Known HS code" field fills with the suggested 2-digit chapter until the user types their own code (`hsCodeAuto`). HS codes may now be 2, 4 or 6–10 digits. Keyword table for the Tariffs page and the landing-page card: `src/data/hsChapterKeywords.js`.
+- **Colours:** branch2's white & violet palette, applied through the existing `@theme` tokens in `src/index.css`, so all animations are kept.
+
+## Why "Supplier B"?
+
+The alternative supplier is picked by a transparent, rule-based shortlist in `src/data/demoData.js` (`ALT_CRITERIA`, `ALT_CANDIDATES`, `rankAltSuppliers`). Each candidate location is scored 1–5 on trade access to Canada, transit time, cost and diversification from the current origin, with weights 30/30/20/20. The current origin is excluded. The Compare step shows the route comparison, the reasons and the full scorecard. The scores are illustrative judgements, not market data.

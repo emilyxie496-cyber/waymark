@@ -1,12 +1,16 @@
 import { Suspense, lazy, useState } from 'react'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { ErrorBoundary, Skeleton } from './components/app/kit.jsx'
+import CompanyPage from './components/CompanyPage.jsx'
+import CustomerPage from './components/CustomerPage.jsx'
 import Features from './components/Features.jsx'
 import Footer from './components/Footer.jsx'
 import Hero from './components/Hero.jsx'
 import InfoDialog from './components/InfoDialog.jsx'
 import { Audience, Faq, Newsletter, Personas } from './components/LandingSections.jsx'
 import Navbar from './components/Navbar.jsx'
+import SignupPage from './components/SignupPage.jsx'
+import TariffPage from './components/TariffPage.jsx'
 import StorySection from './components/trade-visuals/StorySection.jsx'
 import DemoWorkspace from './components/demo/DemoWorkspace.jsx'
 import { DemoPicker, Pricing, SignIn, SignUp } from './pages/Public.jsx'
@@ -27,15 +31,24 @@ const Settings = lazy(() => import('./pages/app/Settings.jsx'))
 
 const ROUTED_DIALOGS = { signIn: '/signin', signUp: '/signup', pricing: '/pricing' }
 
-function Landing() {
+/** Navigation shared by the marketing pages, which take callbacks rather than links. */
+function useSiteNav() {
   const navigate = useNavigate()
   const [dialogKey, setDialogKey] = useState(null)
 
-  const openDemo = (mode) => {
-    navigate(mode === 'sample' ? '/demo' : '/signup')
+  const go = (path) => {
+    navigate(path)
     window.scrollTo({ top: 0 })
   }
-  const openDialog = (key) => (ROUTED_DIALOGS[key] ? navigate(ROUTED_DIALOGS[key]) : setDialogKey(key))
+  const openDemo = (mode) => go(mode === 'sample' ? '/demo' : '/signup')
+  const openDialog = (key) => (ROUTED_DIALOGS[key] ? go(ROUTED_DIALOGS[key]) : setDialogKey(key))
+  const dialog = <InfoDialog dialogKey={dialogKey} onClose={() => setDialogKey(null)} onOpenDemo={openDemo} />
+
+  return { openDemo, openDialog, openPage: (page) => go(`/${page}`), exit: () => go('/'), dialog }
+}
+
+function Landing() {
+  const { openDemo, openDialog, openPage, dialog } = useSiteNav()
 
   return (
     <>
@@ -45,7 +58,7 @@ function Landing() {
       >
         Skip to content
       </a>
-      <Navbar onOpenDialog={openDialog} />
+      <Navbar onOpenDialog={openDialog} onOpenPage={openPage} />
       <main id="main">
         <Hero onOpenDemo={openDemo} />
         <StorySection onOpenDemo={openDemo} />
@@ -55,8 +68,33 @@ function Landing() {
         <Faq />
         <Newsletter />
       </main>
-      <Footer onOpenDialog={openDialog} onOpenDemo={openDemo} />
-      <InfoDialog dialogKey={dialogKey} onClose={() => setDialogKey(null)} onOpenDemo={openDemo} />
+      <Footer onOpenDialog={openDialog} onOpenDemo={openDemo} onOpenPage={openPage} />
+      {dialog}
+    </>
+  )
+}
+
+function Company() {
+  const { openDemo, exit } = useSiteNav()
+  return <CompanyPage onExit={exit} onOpenDemo={openDemo} />
+}
+
+function Customer() {
+  const { openDemo, exit } = useSiteNav()
+  return <CustomerPage onExit={exit} onOpenDemo={openDemo} />
+}
+
+function Tariffs() {
+  const { exit } = useSiteNav()
+  return <TariffPage onExit={exit} />
+}
+
+function Trial() {
+  const { openDemo, openDialog, exit, dialog } = useSiteNav()
+  return (
+    <>
+      <SignupPage onExit={exit} onOpenDemo={openDemo} onOpenDialog={openDialog} />
+      {dialog}
     </>
   )
 }
@@ -77,6 +115,10 @@ export default function App() {
         <Suspense fallback={<div className="p-6"><Skeleton className="h-96" /></div>}>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/company" element={<Company />} />
+            <Route path="/customer" element={<Customer />} />
+            <Route path="/tariffs" element={<Tariffs />} />
+            <Route path="/trial" element={<Trial />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/demo" element={<DemoPicker />} />
             <Route path="/signin" element={<SignIn />} />

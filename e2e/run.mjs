@@ -71,7 +71,8 @@ async function main() {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true })
   page = await context.newPage()
   page.on('console', (m) => {
-    if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) browserErrors.push(m.text())
+    // GDELT's rate-limit replies carry no CORS header, so the browser logs them. The news panel falls back to RSS.
+    if (m.type() === 'error' && !/Failed to load resource|api\.gdeltproject\.org/.test(m.text())) browserErrors.push(m.text())
   })
   page.on('pageerror', (e) => browserErrors.push(e.message))
 
@@ -419,6 +420,26 @@ async function main() {
     await button(/Open Cedar Ridge Outfitters/).click()
     await see('Cedar Ridge Outfitters')
     await see('Pro plan')
+  })
+
+  await step('Company, Customer and Tariffs open from the site and return to it', async () => {
+    for (const [name, route] of [['Company', '/company'], ['Customer', '/customer'], ['Tariffs', '/tariffs']]) {
+      await page.goto(BASE)
+      await page.locator('header').getByRole('button', { name, exact: true }).first().click()
+      await page.waitForURL(`${BASE}${route}`)
+      await page.getByRole('heading', { level: 1 }).waitFor()
+      await button('Back to site').click()
+      await page.waitForURL(`${BASE}/`)
+    }
+  })
+
+  await step('The trial form opens, and its call to action reaches the working sign-up', async () => {
+    await page.goto(`${BASE}/trial`)
+    await page.getByRole('heading', { level: 1 }).waitFor()
+    await page.goto(BASE)
+    await page.locator('header').getByRole('button', { name: /sign ?up|sign ?in|log ?in/i }).first().click()
+    await page.waitForURL(`${BASE}/signup`)
+    await button('Spawn Pro').waitFor()
   })
 
   await step('Pricing page shows plans, comparison and no checkout', async () => {

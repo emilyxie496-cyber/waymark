@@ -40,6 +40,10 @@ beforeAll(async () => {
         res.statusCode = 400
         return res.end(JSON.stringify({ error: 'bad_request', error_code: 'no_route_found', message: 'No route' }))
       }
+      if (req.url.startsWith('/rss/search')) {
+        res.setHeader('Content-Type', 'application/xml')
+        return res.end('<rss><channel><item><title>Tariff story</title></item></channel></rss>')
+      }
       if (req.url.includes('/freight/v3.1/intermodal')) {
         return res.end(JSON.stringify({
           co2e: 900.5, co2e_unit: 'kg', co2e_calculation_method: 'ipcc_ar6_gwp100', distance_km: 13000, cargo_tonnes: 10,
@@ -205,6 +209,30 @@ describe('exchange rates', () => {
   })
   it('rejects an empty response so the client uses its labelled snapshot', () => {
     expect(() => parseFx({ observations: [] })).toThrow()
+  })
+})
+
+describe('trade news fallback', () => {
+  it('returns the RSS feed as XML, with fixed locale parameters', async () => {
+    await withServer({ newsBaseUrl: `http://127.0.0.1:${upstream.address().port}` }, async (url) => {
+      const res = await fetch(`${url}/api/google-news?q=tariff+Canada&hl=fr&ceid=evil`)
+      expect(res.status).toBe(200)
+      expect(res.headers.get('content-type')).toContain('application/xml')
+      expect(await res.text()).toContain('Tariff story')
+      const sent = new URL(lastUpstream.url, 'http://upstream').searchParams
+      expect(sent.get('q')).toBe('tariff Canada')
+      expect(sent.get('hl')).toBe('en-CA')
+      expect(sent.get('ceid')).toBe('CA:en')
+    })
+  })
+
+  it('rejects an empty query and reports upstream failure without a feed', async () => {
+    upstreamMode = 'fail'
+    await withServer({ newsBaseUrl: `http://127.0.0.1:${upstream.address().port}` }, async (url) => {
+      expect((await fetch(`${url}/api/google-news`)).status).toBe(400)
+      expect((await fetch(`${url}/api/google-news?q=tariff`)).status).toBe(502)
+    })
+    upstreamMode = 'ok'
   })
 })
 

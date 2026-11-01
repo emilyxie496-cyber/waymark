@@ -80,6 +80,9 @@ export const EMPTY_ANSWERS = {
   productCategory: '',
   productDescription: '',
   hsCode: '',
+  hsCodeAuto: false, // true while hsCode holds a chapter auto-filled from the description
+  hsChapter: '', // 2-digit HS chapter the user picked manually (auto suggestion is derived, not stored)
+  hsChapterManual: false,
   sourcingRegion: '',
   regionShare: '',
   supplierConcentration: '',
@@ -97,7 +100,10 @@ export const SAMPLE_COMPANY = {
   answers: {
     productCategory: 'home',
     productDescription: 'Stainless-steel cookware and kitchen utensils',
-    hsCode: '', // intentionally blank to show the "missing information" handling
+    hsCode: '', // left blank: the HS chapter is auto-filled from the description, so it's flagged as unconfirmed
+    hsCodeAuto: false,
+    hsChapter: '',
+    hsChapterManual: false,
     sourcingRegion: 'vietnam',
     regionShare: 'gt80',
     supplierConcentration: 'single',
@@ -150,12 +156,134 @@ export const STRATEGY_ASSUMPTIONS = {
   },
 }
 
-// Fictional alternative supplier, chosen from the primary sourcing region.
+/*
+  ---------- Where does "Supplier B" come from? ----------
+  A transparent, rule-based shortlist (no ML): every candidate sourcing location
+  is scored 1–5 on four criteria, weighted, and the top scorer that is NOT the
+  current origin becomes Supplier B. Scores are illustrative judgements for a
+  Canadian importer, not market data — edit them here.
+*/
+export const ALT_CRITERIA = [
+  { key: 'access', label: 'Trade access to Canada', weight: 0.3 },
+  { key: 'transit', label: 'Transit time to Canada', weight: 0.3 },
+  { key: 'cost', label: 'Cost competitiveness', weight: 0.2 },
+  { key: 'diversify', label: 'Diversification from current origin', weight: 0.2 },
+]
+
+const ASIA = ['china', 'vietnam', 'india', 'other-asia']
+const NORTH_AMERICA = ['mexico', 'usa']
+
+export const ALT_CANDIDATES = [
+  {
+    id: 'mexico',
+    label: 'Mexico',
+    leadTimeDays: 21,
+    lane: 'Truck / rail via Laredo, or short-sea to Vancouver',
+    scores: { access: 5, transit: 4, cost: 4 },
+    accessNote: 'CUSMA: duty-free into Canada when goods meet the rules of origin',
+    costNote: 'Labour and factory costs well below Canada and the US; a large export manufacturing base',
+    sameBloc: NORTH_AMERICA,
+  },
+  {
+    id: 'usa',
+    label: 'United States',
+    leadTimeDays: 14,
+    lane: 'Cross-border truck or rail',
+    scores: { access: 5, transit: 5, cost: 2 },
+    accessNote: 'CUSMA: duty-free into Canada when goods meet the rules of origin',
+    costNote: 'Higher unit costs than most offshore suppliers',
+    sameBloc: NORTH_AMERICA,
+  },
+  {
+    id: 'canada',
+    label: 'Canada',
+    leadTimeDays: 10,
+    lane: 'Domestic truck — no border crossing',
+    scores: { access: 5, transit: 5, cost: 1 },
+    accessNote: 'Domestic: no customs, duty or border delays',
+    costNote: 'Highest unit cost; smaller supplier base for many consumer goods',
+    sameBloc: [],
+  },
+  {
+    id: 'vietnam',
+    label: 'Vietnam',
+    leadTimeDays: 35,
+    lane: 'Trans-Pacific ocean freight',
+    scores: { access: 4, transit: 2, cost: 5 },
+    accessNote: 'CPTPP: preferential rates into Canada',
+    costNote: 'Very competitive unit costs',
+    sameBloc: ASIA,
+  },
+  {
+    id: 'india',
+    label: 'India',
+    leadTimeDays: 45,
+    lane: 'Ocean freight via Suez or the Pacific',
+    scores: { access: 2, transit: 1, cost: 5 },
+    accessNote: 'No free-trade agreement with Canada in force',
+    costNote: 'Very competitive unit costs',
+    sameBloc: ASIA,
+  },
+]
+
+const REGION_NAMES = {
+  china: 'China',
+  vietnam: 'Vietnam',
+  india: 'India',
+  'other-asia': 'Asia',
+  eu: 'the EU',
+  mexico: 'Mexico',
+  usa: 'the United States',
+  other: 'your current region',
+}
+
+/** Score every candidate for an origin region, best first. The current origin is excluded. */
+export function rankAltSuppliers(region) {
+  return ALT_CANDIDATES.map((c) => {
+    const excluded = c.id === region
+    // Same region or trade bloc as today's supplier → shares its port, tariff and policy shocks
+    const diversify = excluded ? 0 : c.sameBloc.includes(region) ? 2 : 5
+    const scores = { ...c.scores, diversify }
+    const total = ALT_CRITERIA.reduce((sum, k) => sum + scores[k.key] * k.weight, 0)
+    return { ...c, scores, total: Math.round(total * 100) / 100, excluded }
+  }).sort((a, b) => Number(a.excluded) - Number(b.excluded) || b.total - a.total)
+}
+
+/** Fictional alternative supplier: the top-ranked candidate for the primary sourcing region. */
 export function getAltSupplier(region) {
-  if (region === 'mexico' || region === 'usa') {
-    return { name: 'Supplier B — Canada', leadTimeDays: 10 }
+  const ranking = rankAltSuppliers(region)
+  const best = ranking[0]
+  const runnerUp = ranking[1]
+  const origin = REGION_NAMES[region] ?? 'your current region'
+  const reasons = [
+    { icon: 'scale', title: 'Trade access', text: `${best.accessNote}.` },
+    {
+      icon: 'clock',
+      title: 'Shorter lead time',
+      text: `About ${best.leadTimeDays} days door to door (${best.lane[0].toLowerCase() + best.lane.slice(1)}), so stock can be replenished faster than from ${origin}.`,
+    },
+    {
+      icon: 'globe',
+      title: 'Spreads the risk',
+      text: `A different country and lane from ${origin}, so a port closure, tariff or delay there doesn't hit both suppliers at once.`,
+    },
+    {
+      icon: 'tag',
+      title: 'Cost trade-off',
+      text: `${best.costNote}. The model still charges a ${Math.round(STRATEGY_ASSUMPTIONS.alternative.unitPricePremium * 100)}% unit-price premium on shifted volume.`,
+    },
+  ]
+  return {
+    id: best.id,
+    country: best.label,
+    name: `Supplier B — ${best.label}`,
+    leadTimeDays: best.leadTimeDays,
+    lane: best.lane,
+    origin,
+    reasons,
+    ranking,
+    runnerUp,
   }
-  return { name: 'Supplier B — Mexico', leadTimeDays: 21 }
 }
 
 // ---------- Illustrative classification hints ----------

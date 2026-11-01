@@ -16,6 +16,7 @@ export function cinematicEnabled() {
 // Globe tuning
 export const GLOBE = {
   rotationDegPerSec: 6, // spin speed
-  markerSpeed: 0.045, // fraction of a route travelled per second
+  shipSpeed: 0.02, // fraction of a sea/rail lane travelled per second (× route speed)
+  planeSpeed: 0.03, // fraction of an air lane travelled per second (× route speed)
   initialRotation: [150, -28], // [longitude, latitude] facing the viewer
 }

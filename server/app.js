@@ -6,7 +6,7 @@ import { requireFeature, createAccessMiddleware } from './access.js'
 import { calculateFreight, validateFreightRequest } from './climatiq.js'
 import { explainRecommendation } from './explain.js'
 import { UpstreamError, rateLimiter, ttlCache } from './http.js'
-import { fetchAircraft, fetchFx, fetchWeather, geocode, searchCanadianCompanies } from './providers.js'
+import { fetchAircraft, fetchFx, fetchNewsRss, fetchWeather, geocode, searchCanadianCompanies } from './providers.js'
 import { limitOf } from '../shared/entitlements.js'
 
 const DIST = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist')
@@ -53,6 +53,7 @@ export function createApp(config) {
 
   const fxCache = ttlCache(6 * 3_600_000)
   const weatherCache = ttlCache(30 * 60_000)
+  const newsCache = ttlCache(15 * 60_000)
   const usage = new Map() // daily Climatiq calls per account, plus one shared anonymous bucket
 
   const takeClimatiqCall = (req) => {
@@ -113,6 +114,18 @@ export function createApp(config) {
       if (query.length < 2 || query.length > 120) return res.status(400).json({ error: 'invalid_input', message: 'Enter a place name.' })
       const country = /^[A-Z]{2}$/.test(req.query.country ?? '') ? req.query.country : undefined
       res.json(await geocode(config, { query, country }))
+    }),
+  )
+
+  app.get(
+    '/api/google-news',
+    route(async (req, res) => {
+      const query = String(req.query.q ?? '').trim()
+      if (query.length < 2 || query.length > 500) return res.status(400).json({ error: 'invalid_input', message: 'Enter a news query.' })
+      const cached = newsCache.get(query)
+      const xml = cached ?? (await fetchNewsRss(config, { q: query, hl: 'en-CA', gl: 'CA', ceid: 'CA:en' }))
+      newsCache.set(query, xml)
+      res.type('application/xml').send(xml)
     }),
   )
 

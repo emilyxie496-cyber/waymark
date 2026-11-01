@@ -128,7 +128,7 @@ export function Tile({ label, value, sub, accent }) {
       className={`rounded-3xl border p-4 sm:p-5 ${
         accent
           ? 'ocean-backdrop border-transparent text-white shadow-lg shadow-ocean/20'
-          : 'border-mist bg-white shadow-[0_10px_30px_-14px_rgba(16,42,67,.14)]'
+          : 'border-mist bg-white shadow-[0_10px_30px_-14px_rgba(46,16,101,.14)]'
       }`}
     >
       <p className={`text-xs font-medium ${accent ? 'text-aqua' : 'text-slate-500'}`}>{label}</p>

@@ -14,7 +14,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server/index.js",
-    "test": "vitest run",
+    "test": "vitest run && node scripts/test-hs-chapters.mjs && node scripts/test-trade-news.mjs",
     "test:e2e": "node e2e/run.mjs"
   },
   "dependencies": {

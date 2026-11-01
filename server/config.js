@@ -21,6 +21,7 @@ export function loadConfig(env = process.env) {
     geocodeBaseUrl: env.GEOCODE_BASE_URL || 'https://geocoding-api.open-meteo.com',
     fxBaseUrl: env.FX_BASE_URL || 'https://www.bankofcanada.ca',
     directoryBaseUrl: env.DIRECTORY_BASE_URL || 'https://www.wikidata.org',
+    newsBaseUrl: env.NEWS_BASE_URL || 'https://news.google.com',
     // Shared daily ceiling for keyless demo traffic, so a public demo cannot exhaust a Climatiq quota.
     demoClimatiqDaily: Number(env.DEMO_CLIMATIQ_DAILY) || 300,
     rateLimitPerMinute: Number(env.RATE_LIMIT_PER_MINUTE) || 120,

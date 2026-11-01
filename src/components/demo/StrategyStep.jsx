@@ -5,6 +5,7 @@ import { Panel, StepHeading, StepNav } from './DemoWorkspace.jsx'
 import ScenarioControls from './ScenarioControls.jsx'
 import StrategyChart, { COMPONENT_META } from './StrategyChart.jsx'
 import { AnimatedNumber } from '../motion/Motion.jsx'
+import SupplierRationale from './SupplierRationale.jsx'
 
 // Visual identity per response (colour only — no ranking implied)
 const ACCENT = {
@@ -24,7 +25,7 @@ export default function StrategyStep({
   onBack,
   onNext,
 }) {
-  const { strategies, lowestCostId, scenario: sc } = model
+  const { strategies, lowestCostId, scenario: sc, altSupplier } = model
   const shareId = useId()
   const lowest = strategies.find((s) => s.id === lowestCostId)
 
@@ -81,6 +82,12 @@ export default function StrategyStep({
               before choosing.
             </p>
           </Panel>
+
+          <SupplierRationale
+            alt={altSupplier}
+            currentLeadDays={sc.leadTimeWithDelay - scenario.delayDays}
+            altShare={strategy.altShare}
+          />
 
           <Panel title="Side-by-side">
             <div className="-mx-1 overflow-x-auto px-1">
@@ -150,7 +157,7 @@ export default function StrategyStep({
             {strategies.map((s) => (
               <section
                 key={s.id}
-                className="relative overflow-hidden rounded-3xl border border-mist bg-white p-5 pt-6 shadow-[0_10px_30px_-14px_rgba(16,42,67,.14)] transition-shadow duration-300 hover:shadow-[0_16px_40px_-16px_rgba(16,42,67,.25)]"
+                className="relative overflow-hidden rounded-3xl border border-mist bg-white p-5 pt-6 shadow-[0_10px_30px_-14px_rgba(46,16,101,.14)] transition-shadow duration-300 hover:shadow-[0_16px_40px_-16px_rgba(46,16,101,.25)]"
               >
                 <span className={`absolute inset-x-0 top-0 h-1.5 ${ACCENT[s.id].bar}`} aria-hidden="true" />
                 <div className="flex items-start justify-between gap-2">
@@ -164,7 +171,14 @@ export default function StrategyStep({
                   <AnimatedNumber value={s.total} />
                   <span className="ml-1 text-xs font-medium text-slate-500">est. / 12 mo</span>
                 </p>
-                {s.supplierName && <p className="text-xs font-medium text-amber-700">{s.supplierName}</p>}
+                {s.supplierName && (
+                  <p className="flex flex-wrap items-center gap-x-2 text-xs font-medium text-amber-700">
+                    {s.supplierName}
+                    <a href="#why-supplier-b" className="font-semibold text-brand-700 underline-offset-2 hover:underline">
+                      Why {altSupplier.country}?
+                    </a>
+                  </p>
+                )}
                 <p className="mt-1 text-sm text-slate-600">{s.summary}</p>
                 <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
                   {s.tradeOffs.map((t) => (
@@ -178,8 +192,9 @@ export default function StrategyStep({
             ))}
           </div>
           <p className="text-xs text-slate-500">
-            Supplier B, its prices, lead time and onboarding cost are fictional assumptions — not verified offers. Edit
-            them in <code className="rounded bg-slate-100 px-1">src/data/demoData.js</code>.
+            Supplier B's location comes from the rule-based shortlist above; its prices, lead time and onboarding cost
+            are fictional assumptions, not verified offers. Edit them in{' '}
+            <code className="rounded bg-slate-100 px-1">src/data/demoData.js</code>.
           </p>
         </div>
       </div>

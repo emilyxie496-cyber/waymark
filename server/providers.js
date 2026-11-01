@@ -8,6 +8,18 @@ import { UpstreamError, fetchJson } from './http.js'
 // Every code here must be a published Valet series: one unknown series fails the whole request.
 const FX_SERIES = ['USD', 'EUR', 'CNY', 'GBP', 'JPY', 'MXN', 'INR', 'KRW', 'TWD', 'HKD', 'THB', 'MYR', 'SGD', 'IDR', 'VND', 'TRY', 'AUD', 'BRL', 'PLN']
 
+/** Google News RSS search. It has no CORS headers, so the XML passes through here for the browser to parse. */
+export async function fetchNewsRss(config, params) {
+  let res
+  try {
+    res = await fetch(`${config.newsBaseUrl}/rss/search?${new URLSearchParams(params)}`, { signal: AbortSignal.timeout(config.upstreamTimeoutMs) })
+  } catch (err) {
+    throw new UpstreamError(err.name === 'TimeoutError' ? 'Upstream timed out' : 'Upstream unreachable', { code: 'upstream_unreachable' })
+  }
+  if (!res.ok) throw new UpstreamError(`Upstream responded ${res.status}`, { status: res.status === 429 ? 429 : 502, code: `http_${res.status}` })
+  return res.text()
+}
+
 /** Bank of Canada daily average rates: CAD per unit of each foreign currency. */
 export async function fetchFx(config) {
   const series = FX_SERIES.map((c) => `FX${c}CAD`).join(',')
