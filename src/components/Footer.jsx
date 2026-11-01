@@ -2,7 +2,7 @@ import { FOOTER_GROUPS, LEGAL_LINKS } from '../data/content.js'
 import { Logo } from './ui.jsx'
 
 export default function Footer({ onOpenDialog, onOpenDemo }) {
-  const linkCls = 'text-sm text-slate-400 transition-colors hover:text-aqua'
+  const linkCls = 'text-sm text-slate-300 transition-colors hover:text-aqua'
 
   const renderLink = (l) => {
     if (l.type === 'link')
@@ -23,7 +23,7 @@ export default function Footer({ onOpenDialog, onOpenDemo }) {
   }
 
   return (
-    <footer className="bg-midnight text-slate-300">
+    <footer className="bg-deep text-slate-300">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_3fr]">
           <div>

@@ -67,8 +67,9 @@ export default function TradeGlobe({ animate = true, className = '' }) {
 
       // Atmosphere glow
       const glow = ctx.createRadialGradient(cx, cy, r * 0.92, cx, cy, r * 1.22)
-      glow.addColorStop(0, 'rgba(94, 234, 212, 0.28)')
-      glow.addColorStop(1, 'rgba(94, 234, 212, 0)')
+      glow.addColorStop(0, 'rgba(61, 127, 168, 0.24)')
+      glow.addColorStop(0.45, 'rgba(116, 184, 216, 0.12)')
+      glow.addColorStop(1, 'rgba(116, 184, 216, 0)')
       ctx.fillStyle = glow
       ctx.beginPath()
       ctx.arc(cx, cy, r * 1.22, 0, Math.PI * 2)
@@ -76,9 +77,9 @@ export default function TradeGlobe({ animate = true, className = '' }) {
 
       // Ocean sphere with light from upper-left
       const ocean = ctx.createRadialGradient(cx - r * 0.4, cy - r * 0.45, r * 0.1, cx, cy, r)
-      ocean.addColorStop(0, '#1f7fae')
-      ocean.addColorStop(0.55, '#145a83')
-      ocean.addColorStop(1, '#0a2f4d')
+      ocean.addColorStop(0, '#2b90c2')
+      ocean.addColorStop(0.55, '#1a6896')
+      ocean.addColorStop(1, '#0f3c60')
       ctx.fillStyle = ocean
       ctx.beginPath()
       path({ type: 'Sphere' })
@@ -87,24 +88,33 @@ export default function TradeGlobe({ animate = true, className = '' }) {
       // Graticule
       ctx.beginPath()
       path(graticule)
-      ctx.strokeStyle = 'rgba(245, 250, 252, 0.07)'
+      ctx.strokeStyle = 'rgba(245, 250, 252, 0.08)'
       ctx.lineWidth = 0.6
       ctx.stroke()
 
       // Land
       ctx.beginPath()
       path(land)
-      ctx.fillStyle = 'rgba(205, 238, 232, 0.86)'
+      ctx.fillStyle = 'rgba(214, 241, 238, 0.9)'
       ctx.fill()
-      ctx.strokeStyle = 'rgba(16, 42, 67, 0.35)'
-      ctx.lineWidth = 0.5
+      ctx.strokeStyle = 'rgba(16, 47, 76, 0.5)'
+      ctx.lineWidth = 0.6
       ctx.stroke()
 
       // Terminator-style shading for depth
       const shade = ctx.createRadialGradient(cx - r * 0.35, cy - r * 0.35, r * 0.2, cx, cy, r * 1.05)
-      shade.addColorStop(0, 'rgba(7, 27, 48, 0)')
-      shade.addColorStop(1, 'rgba(7, 27, 48, 0.55)')
+      shade.addColorStop(0, 'rgba(10, 36, 62, 0)')
+      shade.addColorStop(1, 'rgba(10, 36, 62, 0.42)')
       ctx.fillStyle = shade
+      ctx.beginPath()
+      path({ type: 'Sphere' })
+      ctx.fill()
+
+      // Gentle blue-white rim light along the limb
+      const rim = ctx.createRadialGradient(cx, cy, r * 0.9, cx, cy, r)
+      rim.addColorStop(0, 'rgba(232, 245, 250, 0)')
+      rim.addColorStop(1, 'rgba(200, 232, 245, 0.22)')
+      ctx.fillStyle = rim
       ctx.beginPath()
       path({ type: 'Sphere' })
       ctx.fill()

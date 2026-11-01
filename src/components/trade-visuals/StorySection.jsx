@@ -12,7 +12,7 @@ export default function StorySection({ onOpenDemo }) {
   const [active, setRef] = useActiveStep(STORY_SCENES.length)
 
   return (
-    <section id="story" className="ocean-backdrop relative text-white" aria-label="How global trade shapes your costs">
+    <section id="story" className="ocean-story relative text-navy" aria-label="How global trade shapes your costs">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:px-8 lg:py-10">
         <ol className="lg:py-[18vh]">
           {STORY_SCENES.map((s, i) => (
@@ -24,21 +24,21 @@ export default function StorySection({ onOpenDemo }) {
                 active === i ? 'lg:opacity-100' : 'lg:opacity-35'
               }`}
             >
-              <p className="flex items-center gap-3 text-sm font-semibold tracking-wide text-aqua uppercase">
-                <span className="font-display flex h-7 w-7 items-center justify-center rounded-full border border-aqua/40 text-xs">
+              <p className="flex items-center gap-3 text-sm font-semibold tracking-wide text-brand-700 uppercase">
+                <span className="font-display flex h-7 w-7 items-center justify-center rounded-full border border-brand-700/40 text-xs">
                   {i + 1}
                 </span>
                 {s.kicker}
               </p>
-              <h2 className="mt-4 text-3xl font-bold text-balance text-white sm:text-4xl">{s.title}</h2>
-              <p className="mt-4 max-w-lg text-lg leading-relaxed text-slate-300">{s.body}</p>
+              <h2 className="mt-4 text-3xl font-bold text-balance text-navy sm:text-4xl">{s.title}</h2>
+              <p className="mt-4 max-w-lg text-lg leading-relaxed text-slate-600">{s.body}</p>
               {s.note && <p className="mt-3 text-xs text-slate-500">{s.note}</p>}
               {i === STORY_SCENES.length - 1 && (
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Button size="lg" variant="glow" onClick={() => onOpenDemo('blank')}>
                     Get started for free <Icon name="arrowRight" className="h-4 w-4" />
                   </Button>
-                  <Button size="lg" variant="glass" onClick={() => onOpenDemo('sample')}>
+                  <Button size="lg" variant="secondary" onClick={() => onOpenDemo('sample')}>
                     Get a Demo
                   </Button>
                 </div>

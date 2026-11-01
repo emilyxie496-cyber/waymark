@@ -13,7 +13,7 @@ export default function StoryVisual({ scene }) {
   return (
     <div className="relative aspect-[10/8] w-full">
       <div className={`absolute inset-0 transition-opacity duration-700 ${scene <= 2 ? 'opacity-100' : 'pointer-events-none opacity-0'}`}>
-        <svg viewBox="0 0 600 480" className="h-full w-full" aria-hidden="true">
+        <svg viewBox="0 0 600 480" className="h-full w-full drop-shadow-[0_20px_40px_rgba(16,47,76,0.18)]" aria-hidden="true">
           <defs>
             <linearGradient id={ids.sea} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stopColor="#176b9a" stopOpacity=".55" />

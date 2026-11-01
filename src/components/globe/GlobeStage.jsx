@@ -8,7 +8,7 @@ const TradeGlobe = lazy(() => import('./TradeGlobe.jsx'))
 export function StaticGlobe() {
   return (
     <div className="relative h-full w-full" aria-hidden="true">
-      <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_32%_28%,#1f7fae,#145a83_55%,#0a2f4d)] shadow-[0_0_80px_10px_rgba(94,234,212,0.18)]" />
+      <div className="absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_32%_28%,#2b90c2,#1a6896_55%,#0f3c60)] shadow-[0_0_80px_10px_rgba(61,127,168,0.22)]" />
       <svg viewBox="0 0 100 100" className="absolute inset-[8%] h-[84%] w-[84%] opacity-50">
         <ellipse cx="50" cy="50" rx="49" ry="49" fill="none" stroke="rgba(245,250,252,.15)" />
         <ellipse cx="50" cy="50" rx="22" ry="49" fill="none" stroke="rgba(245,250,252,.1)" />
