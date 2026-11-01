@@ -1,6 +1,6 @@
 # Waymark — Hackathon Prototype
 
-**Plan. Pivot. Grow.** A landing page and an interactive demo for Waymark, a proposed supply-chain risk and cost intelligence platform for Canadian importing SMEs.
+**Plan. Pivot. Progress.** A landing page and an interactive demo for Waymark, a proposed supply-chain risk and cost intelligence platform for Canadian importing SMEs.
 
 > Hackathon prototype · all companies, suppliers, rates and results are fictional or illustrative. No AI service, tariff feed, backend or account system is connected.
 

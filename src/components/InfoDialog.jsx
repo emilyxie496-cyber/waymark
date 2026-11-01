@@ -91,7 +91,7 @@ export default function InfoDialog({ dialogKey, onClose, onOpenDemo }) {
                   onOpenDemo(content.action === 'sample' ? 'sample' : 'blank')
                 }}
               >
-                {content.action === 'sample' ? 'Open sample demo' : 'Start the questionnaire'}
+                {content.actionLabel ?? (content.action === 'sample' ? 'Open sample demo' : 'Start the questionnaire')}
                 <Icon name="arrowRight" className="h-4 w-4" />
               </Button>
             )}

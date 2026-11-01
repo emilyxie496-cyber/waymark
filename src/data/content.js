@@ -3,14 +3,14 @@
   Keep claims honest: this is a hackathon prototype using illustrative data.
 */
 
-// type: 'link' scrolls to a section; 'dialog' opens an info dialog by key.
+// type: 'link' scrolls to a section; 'dialog' opens an info dialog by key;
+// 'page' opens a full page view (see App.jsx).
 export const NAV_LINKS = [
-  { label: 'Company', type: 'dialog', target: 'company' },
-  { label: 'Tariff Discovery', type: 'link', target: '#tariff-discovery' },
-  { label: 'Product Classification', type: 'link', target: '#product-classification' },
-  { label: 'Tariff Audits', type: 'dialog', target: 'tariffAudits', planned: true },
+  { label: 'Company', type: 'page', target: 'company' },
+  { label: 'Customer', type: 'page', target: 'customer' },
+  { label: 'Tariffs', type: 'page', target: 'tariffs' },
+  { label: 'Products', type: 'link', target: '#product-classification' },
   { label: 'Platform API', type: 'dialog', target: 'platformApi', planned: true },
-  { label: 'Resources', type: 'dialog', target: 'resources' },
 ]
 
 export const PERSONAS = [
@@ -47,7 +47,7 @@ export const PERSONAS = [
 export const FAQS = [
   {
     q: 'What is Waymark?',
-    a: 'Waymark is a hackathon prototype that helps Canadian importing SMEs build a preliminary profile of their supply chain and compare illustrative responses to disruptions such as freight-cost increases, supplier delays or a hypothetical tariff change.',
+    a: 'Waymark helps Canadian importing SMEs build a preliminary profile of their supply chain and compare illustrative responses to disruptions such as freight-cost increases, supplier delays or a hypothetical tariff change.',
   },
   {
     q: 'How can AI support trade planning?',
@@ -75,8 +75,8 @@ export const FOOTER_GROUPS = [
   {
     title: 'Product',
     links: [
-      { label: 'Tariff Discovery', type: 'link', target: '#tariff-discovery' },
-      { label: 'Product Classification', type: 'link', target: '#product-classification' },
+      { label: 'Tariffs', type: 'page', target: 'tariffs' },
+      { label: 'Products', type: 'link', target: '#product-classification' },
       { label: 'Compliance Monitoring', type: 'link', target: '#compliance-monitoring' },
       { label: 'Interactive demo', type: 'demo', target: 'sample' },
     ],
@@ -90,12 +90,12 @@ export const FOOTER_GROUPS = [
   },
   {
     title: 'Pricing',
-    links: [{ label: 'Proposed pricing', type: 'dialog', target: 'pricing' }],
+    links: [{ label: 'Free trial', type: 'dialog', target: 'pricing' }],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About Waymark', type: 'dialog', target: 'company' },
+      { label: 'About Waymark', type: 'page', target: 'company' },
       { label: 'Discovery call', type: 'dialog', target: 'discovery' },
     ],
   },
@@ -119,26 +119,9 @@ export const LEGAL_LINKS = [
   Info dialogs. `action` adds a button:
   'sample' → opens the prefilled sample walkthrough
   'questionnaire' → opens a blank questionnaire
+  `actionLabel` optionally overrides the button text.
 */
 export const DIALOGS = {
-  company: {
-    title: 'About Waymark',
-    badge: 'Hackathon prototype',
-    paragraphs: [
-      'Waymark is a proposed supply-chain risk and cost intelligence platform for small and medium-sized enterprises, starting with Canadian importers that do not have a dedicated supply-chain risk team.',
-      'The idea combines trade-compliance assistance with practical scenario planning: understand your exposure, test what-if shocks and compare responses — starting from a short questionnaire.',
-      'We help businesses prepare for uncertainty; we do not predict global events. Everything on this site is a prototype using illustrative data.',
-    ],
-    action: 'sample',
-  },
-  tariffAudits: {
-    title: 'Tariff Audits',
-    badge: 'Planned capability',
-    paragraphs: [
-      'A future capability could help review past import entries for possible classification or duty discrepancies and flag items worth discussing with a customs broker.',
-      'It is not available in this prototype, and nothing here audits real import records.',
-    ],
-  },
   platformApi: {
     title: 'Platform API',
     badge: 'Planned capability',
@@ -147,33 +130,14 @@ export const DIALOGS = {
       'No API exists in this prototype, and no integrations are connected.',
     ],
   },
-  resources: {
-    title: 'Resources',
-    paragraphs: ['Helpful places to start in this prototype:'],
-    links: [
-      { label: 'Common questions', target: '#faq' },
-      { label: 'Newsletter (demo only)', target: '#newsletter' },
-      { label: 'Who Waymark is for', target: '#audience' },
-    ],
-    action: 'sample',
-  },
   signIn: {
     title: 'Sign in',
     badge: 'Not available in prototype',
     paragraphs: [
-      'Accounts are not available in this hackathon prototype, so there is nothing to sign in to.',
-      'You can explore the full journey with a fictional sample company instead — no account or personal details needed.',
+      'Accounts are not available yet, so there is nothing to sign in to.',
+      'You can try every step with a fictional sample company instead — no account or personal details needed.',
     ],
     action: 'sample',
-  },
-  signUp: {
-    title: 'Sign up',
-    badge: 'Not available in prototype',
-    paragraphs: [
-      'Account creation is not available in this prototype, and no details are collected.',
-      'Try the questionnaire or the sample walkthrough instead. Your answers stay in this browser tab and are cleared when you reset or close it.',
-    ],
-    action: 'questionnaire',
   },
   discovery: {
     title: 'Discovery call (sample)',
@@ -189,22 +153,26 @@ export const DIALOGS = {
     action: 'sample',
   },
   pricing: {
-    title: 'Proposed pricing',
-    badge: 'Unvalidated hypothesis',
-    paragraphs: ['Our current business-model hypothesis is freemium:'],
-    bullets: [
-      'Free: questionnaire, preliminary profile and a basic scenario',
-      'Paid: additional scenarios, saved comparisons and shareable reports',
-      'Later: data integrations and team features',
+    title: 'Try Waymark free for 14 days',
+    badge: 'Free trial',
+    paragraphs: [
+      'See your landed cost, test what-if scenarios and get HS chapters suggested for your products. Start with a short questionnaire.',
     ],
-    footnote:
-      'Prices and willingness to pay have not been validated with customers. There is no payment integration in this prototype.',
+    bullets: [
+      'Full access to every feature',
+      'Up to 30 tasks during the trial',
+      'No credit card required',
+      'Refer a colleague and get an extra week free for every sign-up',
+    ],
+    footnote: 'Plans start at $0/month. Paid plans grow with your usage, not your headcount.',
+    action: 'questionnaire',
+    actionLabel: 'Start free trial',
   },
   terms: {
     title: 'Terms',
     badge: 'Prototype information',
     paragraphs: [
-      'This site is a hackathon prototype provided for demonstration only. Outputs are illustrative estimates and are not financial, legal, customs or compliance advice.',
+      'This site is provided for demonstration only. Outputs are illustrative estimates and are not financial, legal, customs or compliance advice.',
       'No formal terms of service have been drafted for this prototype.',
     ],
   },
@@ -232,5 +200,104 @@ export const DIALOGS = {
       'Our approach for the prototype: label fictional and hypothetical data clearly, show every formula, and keep working features separate from planned ones.',
       'There are no audits, certifications or compliance attestations to report.',
     ],
+  },
+}
+
+// "Company" page (Our Story). Plain-spoken narrative, short sentences.
+export const COMPANY_STORY = {
+  hero: {
+    eyebrow: 'Our Story',
+    headline:
+      'Transforming global trade infrastructure into an effortless, accurate, and profitable experience for everyone.',
+    subheading: 'A live model of your operations that turns your vision into flawless daily execution.',
+    scope: 'For any product, any market, and any scale.',
+  },
+  mission: {
+    quote: 'Every importer should know what a shipment will really cost before it leaves the dock.',
+    closing: "That's why we built Waymark.",
+  },
+  vision: {
+    eyebrow: 'Where this is going',
+    heading: 'Trade decisions get made before the problem, not after it.',
+    paragraph:
+      'In five years, importing will run on live models, not spreadsheets and guesswork. A tariff change or a port delay will show up in your plan the same day, not on an invoice six weeks later. Small importers will plan with the clarity that large firms pay whole teams for. Waymark will hold that model: your products, your suppliers, your costs, and the options you have when something moves.',
+    punchline: "The importers who win won't be the biggest. They'll be the ones who already ran the numbers.",
+  },
+}
+
+// "Customer" page. Every number below is a fact about this prototype —
+// there are no real customers yet, so no logos or usage stats.
+export const CUSTOMER_PAGE = {
+  hero: {
+    eyebrow: 'Waymark for Canadian importers',
+    headline: 'Know your landed cost before the next shock hits.',
+    subheading:
+      'Answer three short questions about your products, sourcing and spend, and Waymark models your exposure and compares your options side by side.',
+    cta: 'Get started for free',
+  },
+  stats: [
+    { value: '97', label: 'HS chapters mapped' },
+    { value: '3', label: 'short questionnaire steps' },
+    { value: '0', label: 'documents to upload' },
+    { value: '12', label: 'month scenario horizon' },
+  ],
+  benefits: [
+    {
+      key: 'speed',
+      icon: 'sparkles',
+      heading: 'A first profile in minutes, not weeks.',
+      body: 'Approximate ranges are enough to start. Three short steps cover products, sourcing and spend. No invoices, no CSV exports, no consultant.',
+      proof: 'Three steps · no uploads · HS chapter filled in as you type',
+    },
+    {
+      key: 'cost',
+      icon: 'ship',
+      heading: 'See which response costs least before you commit.',
+      body: 'Freight spikes, supplier delays and tariff changes are priced over the same 12 months. Staying put, switching suppliers and expediting sit side by side. Every formula is visible.',
+      proof: 'Three responses compared on one 12-month basis',
+    },
+    {
+      key: 'risk',
+      icon: 'alert',
+      heading: 'Spot the dependency that could hurt you most.',
+      body: 'Simple rules flag single-supplier reliance, regional concentration and thin inventory cover. Each flag says why it fired. You decide what to do next.',
+      proof: 'Every “Review” and “Watch” flag comes with its reason',
+    },
+  ],
+  differentiator: {
+    eyebrow: 'Not just another trade compliance tool',
+    heading: 'Spreadsheets show what you paid. Waymark shows what comes next.',
+    paragraph:
+      'Most importers plan in spreadsheets or ask a general-purpose AI chat. Spreadsheets break when the question changes. Chat answers sound sure but hide their working. Waymark keeps your inputs, assumptions and results in one model you can check.',
+    themLabel: 'Spreadsheets & generic AI',
+    usLabel: 'Waymark',
+    rows: [
+      { topic: 'Getting started', them: 'Weeks of data cleanup first', us: 'Approximate ranges in three steps' },
+      { topic: 'Scenarios', them: 'One-off formulas that break', us: 'Freight, delay and tariff shocks on one 12-month basis' },
+      { topic: 'Trust', them: 'Answers without the working', us: 'Every assumption and formula visible' },
+      { topic: 'Classification', them: 'Manual HS lookups', us: 'HS chapter suggested from your product description' },
+    ],
+  },
+}
+
+// "Sign up" page. Plain and specific. No accounts exist yet, so the form
+// validates in the browser and nothing is stored or sent.
+export const SIGNUP_PAGE = {
+  trialDays: 14,
+  outcome: 'Answer three short questions and see your first cost scenario and HS chapter suggestions in about 5 minutes.',
+  reassurance: [
+    { icon: 'layers', title: 'All features, up to 30 tasks', text: 'Classifications, scenarios and reports are all switched on for the trial.' },
+    { icon: 'card', title: 'No credit card required', text: 'We only ask for your work email, name and company.' },
+    { icon: 'clock', title: 'Set up in about 5 minutes, 0 documents to upload', text: 'Approximate ranges are enough. No IT help, nothing to install.' },
+  ],
+  afterTrial: [
+    'You move to the Free plan: 30 credits a year, and your profile stays saved.',
+    'Need more? Paid plans start at $99/month, billed yearly, with more credits and unlimited users.',
+    'Nothing is charged automatically. You only pay if you choose a paid plan.',
+  ],
+  referral: {
+    title: 'Love Waymark? Share the love!',
+    text: 'Refer a friend or colleague and get an extra free week of full access for every user who registers. It’s our way of saying thank you for spreading the word!',
+    cta: 'Refer a friend',
   },
 }

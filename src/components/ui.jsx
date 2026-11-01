@@ -1,4 +1,4 @@
-// Small shared UI pieces: icons, buttons, badges, logo, section headings.
+// Small shared UI pieces: icons, buttons, badges, logo, section headings, form fields.
 
 const ICONS = {
   arrowRight: 'M5 12h14M13 6l6 6-6 6',
@@ -19,6 +19,8 @@ const ICONS = {
   sparkles: 'M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3ZM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z',
   layers: 'M12 3 2 8l10 5 10-5-10-5ZM2 13l10 5 10-5M2 17.5l10 5 10-5',
   user: 'M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z',
+  clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 7v5l3 2',
+  card: 'M3 6h18v12H3zM3 10h18M7 15h4',
 }
 
 export function Icon({ name, className = 'h-5 w-5', strokeWidth = 1.8 }) {
@@ -123,4 +125,28 @@ export function LevelChip({ level }) {
   }
   const { tone, label } = map[level] ?? map.ok
   return <Badge tone={tone}>{label}</Badge>
+}
+
+// ---------- Form fields ----------
+
+export const inputBase =
+  'mt-1.5 h-11 w-full rounded-lg border bg-white px-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2'
+export const inputState = (error) =>
+  error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200' : 'border-slate-300 focus:border-brand-600 focus:ring-brand-200'
+
+export function FieldLabel({ htmlFor, label, optional, as: Tag = 'label' }) {
+  return (
+    <Tag htmlFor={htmlFor} className="text-sm font-semibold text-slate-800">
+      {label} {optional && <span className="font-normal text-slate-500">(optional)</span>}
+    </Tag>
+  )
+}
+
+export function ErrorText({ id, error }) {
+  if (!error) return null
+  return (
+    <p id={id} className="mt-1.5 text-sm text-rose-700">
+      {error}
+    </p>
+  )
 }

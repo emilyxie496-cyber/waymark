@@ -80,6 +80,7 @@ export const EMPTY_ANSWERS = {
   productCategory: '',
   productDescription: '',
   hsCode: '',
+  hsCodeAuto: false, // true while hsCode holds a chapter auto-filled from the description
   sourcingRegion: '',
   regionShare: '',
   supplierConcentration: '',
@@ -98,6 +99,7 @@ export const SAMPLE_COMPANY = {
     productCategory: 'home',
     productDescription: 'Stainless-steel cookware and kitchen utensils',
     hsCode: '', // intentionally blank to show the "missing information" handling
+    hsCodeAuto: false,
     sourcingRegion: 'vietnam',
     regionShare: 'gt80',
     supplierConcentration: 'single',
@@ -157,23 +159,6 @@ export function getAltSupplier(region) {
   }
   return { name: 'Supplier B — Mexico', leadTimeDays: 21 }
 }
-
-// ---------- Illustrative classification hints ----------
-// Starting points only — NOT a classification. Chapters are HS chapter numbers.
-
-export const CLASSIFICATION_HINTS = [
-  { keywords: ['cookware', 'pot', 'pan', 'utensil', 'stainless', 'steel', 'cutlery', 'kitchen'], chapter: '73', label: 'Articles of iron or steel' },
-  { keywords: ['shirt', 't-shirt', 'sweater', 'hoodie', 'knit'], chapter: '61', label: 'Knitted or crocheted apparel' },
-  { keywords: ['jacket', 'coat', 'dress', 'trousers', 'woven', 'apparel', 'clothing'], chapter: '62', label: 'Apparel, not knitted' },
-  { keywords: ['cable', 'charger', 'battery', 'led', 'circuit', 'electronic', 'speaker', 'adapter'], chapter: '85', label: 'Electrical machinery and equipment' },
-  { keywords: ['pump', 'valve', 'bearing', 'machine', 'engine', 'compressor', 'motor', 'gear'], chapter: '84', label: 'Machinery and mechanical appliances' },
-  { keywords: ['shampoo', 'cosmetic', 'lotion', 'makeup', 'skincare', 'perfume'], chapter: '33', label: 'Essential oils, cosmetics and toiletries' },
-  { keywords: ['furniture', 'chair', 'sofa', 'desk', 'mattress', 'shelf'], chapter: '94', label: 'Furniture and bedding' },
-  { keywords: ['toy', 'game', 'puzzle', 'doll'], chapter: '95', label: 'Toys, games and sports requisites' },
-  { keywords: ['plastic', 'container', 'bottle', 'bag'], chapter: '39', label: 'Plastics and articles thereof' },
-  { keywords: ['ceramic', 'porcelain', 'mug', 'tile'], chapter: '69', label: 'Ceramic products' },
-  { keywords: ['coffee', 'tea', 'spice'], chapter: '09', label: 'Coffee, tea and spices' },
-]
 
 // ---------- Helpers ----------
 

@@ -23,7 +23,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
 
   const inputs = [
     ['Product category', labelOf(PRODUCT_CATEGORIES, answers.productCategory)],
-    ['HS code', answers.hsCode || 'Not provided'],
+    ['HS code', answers.hsCodeAuto ? `Chapter ${answers.hsCode} (auto-filled, unverified)` : answers.hsCode || 'Not provided'],
     ['Main sourcing region', `${labelOf(REGIONS, answers.sourcingRegion)} (${labelOf(REGION_SHARES, answers.regionShare)} of imports)`],
     ['Supplier concentration', labelOf(CONCENTRATION, answers.supplierConcentration)],
     ['Lead time / buffer', `${labelOf(LEAD_TIMES, answers.leadTime)} / ${labelOf(BUFFERS, answers.inventoryBuffer, 'Not provided')}`],
@@ -43,7 +43,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
   const actions = [
     answers.supplierConcentration === 'single' &&
       'Request quotes from one or two alternative suppliers to replace the fictional Supplier B assumptions with real figures.',
-    !answers.hsCode && 'Confirm HS classification with a licensed customs broker or official CBSA guidance.',
+    (!answers.hsCode || answers.hsCodeAuto) && 'Confirm HS classification with a licensed customs broker or official CBSA guidance.',
     scenario.tariffEnabled && 'Check currently applicable tariff treatment from official sources before acting on tariff results.',
     resolved.bufferDays === null && 'Measure typical days of stock on hand so delay impact can be estimated properly.',
     sc.uncoveredDays > 0 && `Review reorder points: a ${scenario.delayDays}-day delay leaves about ${sc.uncoveredDays} days uncovered.`,
@@ -185,7 +185,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
         </div>
 
         <footer className="mt-10 border-t border-slate-200 pt-4 text-xs text-slate-500">
-          Waymark hackathon prototype · Illustrative data · Not financial, legal, customs or compliance advice.
+          Not financial, legal, customs or compliance advice.
         </footer>
       </article>
 

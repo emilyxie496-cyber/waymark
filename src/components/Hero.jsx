@@ -23,7 +23,7 @@ export default function Hero({ onOpenDemo }) {
             className="mt-6 text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl lg:text-7xl"
           >
             Plan. <span className="bg-gradient-to-r from-brand-700 to-brand-500 bg-clip-text text-transparent">Pivot.</span>{' '}
-            Grow.
+            Progress.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-slate-600 sm:text-xl">
             Understand your supply-chain exposure, explore tariff and freight-cost scenarios, and compare practical
@@ -40,10 +40,6 @@ export default function Hero({ onOpenDemo }) {
           <p className="mt-5 text-sm text-slate-500">
             Lower-data onboarding: approximate ranges first, no CSV upload to get started.
           </p>
-          <p className="mt-8 inline-flex items-center gap-2 rounded-full border border-dashed border-slate-300 px-3 py-1 text-xs font-medium text-slate-500">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-400" aria-hidden="true" />
-            Hackathon prototype · Illustrative data
-          </p>
         </div>
         <DashboardPreview />
       </div>
@@ -52,7 +48,7 @@ export default function Hero({ onOpenDemo }) {
 }
 
 /** Polished preview built from the same calculations as the demo, using the fictional sample company. */
-function DashboardPreview() {
+export function DashboardPreview() {
   const data = useMemo(() => {
     const resolved = resolveInputs(SAMPLE_COMPANY.answers)
     const profile = assessProfile(SAMPLE_COMPANY.answers, resolved)

@@ -9,8 +9,9 @@ import {
   REGIONS,
   REGION_SHARES,
 } from '../../data/demoData.js'
+import { suggestHsCode } from '../../utils/classify.js'
 import { QUESTIONNAIRE_STEPS, validateStep } from '../../utils/validation.js'
-import { Badge, Button, Icon } from '../ui.jsx'
+import { Badge, Button, ErrorText, FieldLabel, Icon, inputBase, inputState } from '../ui.jsx'
 
 export default function Questionnaire({
   answers,
@@ -36,6 +37,25 @@ export default function Questionnaire({
   const set = (field) => (value) => {
     onChange({ [field]: value })
     if (errors[field]) setErrors(({ [field]: _removed, ...rest }) => rest)
+  }
+
+  // Typing a description fills "Known HS code" with the matching chapter, unless
+  // the user has entered their own code (then it is left alone).
+  const setDescription = (value) => {
+    const patch = { productDescription: value }
+    if (!answers.hsCode || answers.hsCodeAuto) {
+      const code = suggestHsCode(value)
+      Object.assign(patch, { hsCode: code, hsCodeAuto: Boolean(code) })
+    }
+    onChange(patch)
+    if (errors.productDescription || errors.hsCode) {
+      setErrors(({ productDescription: _d, hsCode: _h, ...rest }) => rest)
+    }
+  }
+
+  const setHsCode = (value) => {
+    onChange({ hsCode: value, hsCodeAuto: false })
+    if (errors.hsCode) setErrors(({ hsCode: _removed, ...rest }) => rest)
   }
 
   const next = () => {
@@ -116,7 +136,7 @@ export default function Questionnaire({
                 optional
                 hint="Generic wording only, e.g. “stainless-steel cookware”. Used for an illustrative classification hint."
                 value={answers.productDescription}
-                onChange={set('productDescription')}
+                onChange={setDescription}
                 error={errors.productDescription}
                 maxLength={160}
               />
@@ -124,11 +144,15 @@ export default function Questionnaire({
                 field="hsCode"
                 label="Known HS code"
                 optional
-                hint="If you already use one. 6–10 digits, dots allowed."
+                hint={
+                  answers.hsCodeAuto
+                    ? 'Auto-filled HS chapter from your description — illustrative only. Replace it with your full code if you have one.'
+                    : 'If you already use one. 6–10 digits, dots allowed — or leave blank to auto-fill a chapter from the description.'
+                }
                 placeholder="e.g. 7323.93"
                 inputMode="decimal"
                 value={answers.hsCode}
-                onChange={set('hsCode')}
+                onChange={setHsCode}
                 error={errors.hsCode}
                 className="sm:max-w-xs"
               />
@@ -253,28 +277,6 @@ export default function Questionnaire({
 }
 
 // ---------- Form fields ----------
-
-const inputBase =
-  'mt-1.5 h-11 w-full rounded-lg border bg-white px-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2'
-const inputState = (error) =>
-  error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200' : 'border-slate-300 focus:border-brand-600 focus:ring-brand-200'
-
-function FieldLabel({ htmlFor, label, optional, as: Tag = 'label' }) {
-  return (
-    <Tag htmlFor={htmlFor} className="text-sm font-semibold text-slate-800">
-      {label} {optional && <span className="font-normal text-slate-500">(optional)</span>}
-    </Tag>
-  )
-}
-
-function ErrorText({ id, error }) {
-  if (!error) return null
-  return (
-    <p id={id} className="mt-1.5 text-sm text-rose-700">
-      {error}
-    </p>
-  )
-}
 
 function SelectField({ field, label, options, value, onChange, error }) {
   const id = useId()

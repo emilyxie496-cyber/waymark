@@ -16,7 +16,8 @@ import { Panel, StepHeading, StepNav } from './DemoWorkspace.jsx'
 
 export default function ProfileStep({ answers, model, isSample, headingRef, onBack, onNext, onEdit }) {
   const { profile, resolved } = model
-  const classification = suggestChapter(answers.productDescription, answers.hsCode)
+  // An auto-filled chapter came from this same lookup, so don't compare it with itself
+  const classification = suggestChapter(answers.productDescription, answers.hsCodeAuto ? '' : answers.hsCode)
 
   return (
     <div>
@@ -36,7 +37,7 @@ export default function ProfileStep({ answers, model, isSample, headingRef, onBa
           rows={[
             ['Category', labelOf(PRODUCT_CATEGORIES, answers.productCategory)],
             ['Description', answers.productDescription || 'Not provided'],
-            ['HS code', answers.hsCode || 'Not provided'],
+            ['HS code', answers.hsCodeAuto ? `Chapter ${answers.hsCode} (auto-filled)` : answers.hsCode || 'Not provided'],
           ]}
         />
         <SummaryCard

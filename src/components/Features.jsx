@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { suggestChapter } from '../utils/classify.js'
+import { suggestChapter, suggestHsCode } from '../utils/classify.js'
 import { money } from '../utils/format.js'
 import { isValidHsCode } from '../utils/validation.js'
 import { Badge, Button, Icon, SectionHeading } from './ui.jsx'
@@ -127,21 +127,37 @@ function Stat({ label, value, swatch, strong }) {
 function ClassificationCard() {
   const [desc, setDesc] = useState('')
   const [hs, setHs] = useState('')
+  const [hsAuto, setHsAuto] = useState(false) // hs holds a chapter auto-filled from desc
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
   const descId = useId()
   const hsId = useId()
+
+  // Auto-fill the HS chapter while typing, unless the user entered their own code
+  const changeDesc = (value) => {
+    setDesc(value)
+    if (!hs || hsAuto) {
+      const code = suggestHsCode(value)
+      setHs(code)
+      setHsAuto(Boolean(code))
+    }
+  }
+
+  const changeHs = (value) => {
+    setHs(value)
+    setHsAuto(false)
+  }
 
   const submit = (e) => {
     e.preventDefault()
     const problem = !desc.trim()
       ? 'Describe the product first.'
       : !isValidHsCode(hs)
-        ? 'HS code should be 6–10 digits (dots allowed), or blank.'
+        ? 'HS code should be a 2-digit chapter, 4-digit heading or 6–10 digits (dots allowed), or blank.'
         : ''
     setError(problem)
     if (problem) return setResult(null)
-    setResult(suggestChapter(desc, hs))
+    setResult(suggestChapter(desc, hsAuto ? '' : hs))
   }
 
   return (
@@ -166,7 +182,7 @@ function ClassificationCard() {
           <input
             id={descId}
             value={desc}
-            onChange={(e) => setDesc(e.target.value)}
+            onChange={(e) => changeDesc(e.target.value)}
             placeholder="e.g. stainless-steel cookware"
             maxLength={160}
             className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm placeholder:text-slate-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-200"
@@ -175,12 +191,13 @@ function ClassificationCard() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="flex-1">
             <label htmlFor={hsId} className="text-sm font-medium text-slate-700">
-              Known HS code <span className="font-normal text-slate-500">(optional)</span>
+              Known HS code{' '}
+              <span className="font-normal text-slate-500">{hsAuto ? '(auto-filled chapter)' : '(optional)'}</span>
             </label>
             <input
               id={hsId}
               value={hs}
-              onChange={(e) => setHs(e.target.value)}
+              onChange={(e) => changeHs(e.target.value)}
               inputMode="decimal"
               placeholder="e.g. 7323.93"
               className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm placeholder:text-slate-400 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-200"
@@ -250,7 +267,6 @@ function MonitoringCard() {
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-xs text-slate-500">Sample prompts shown for illustration.</p>
     </Card>
   )
 }
@@ -263,8 +279,7 @@ function JourneyCard({ onOpenDemo }) {
       className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-800 via-brand-700 to-brand-600 p-6 text-white shadow-sm sm:p-7 lg:col-span-2"
     >
       <div aria-hidden="true" className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
-      <p className="text-sm font-semibold text-brand-100">The interactive demo</p>
-      <h3 id="journey-title" className="mt-1 text-xl font-bold">
+      <h3 id="journey-title" className="text-xl font-bold">
         One journey, five steps
       </h3>
       <ol className="mt-5 space-y-2.5">
