@@ -1,4 +1,6 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { HS_INDEX } from '../../data/hsChapters.js'
+import { suggestHsChapters } from '../../utils/hsChapters.js'
 import {
   BUFFERS,
   CONCENTRATION,
@@ -9,8 +11,8 @@ import {
   REGIONS,
   REGION_SHARES,
 } from '../../data/demoData.js'
-import { QUESTIONNAIRE_STEPS, validateStep } from '../../utils/validation.js'
-import { Badge, Button, Icon } from '../ui.jsx'
+import { QUESTIONNAIRE_STEPS, isValidHsCode, normalizeHsCode, validateStep } from '../../utils/validation.js'
+import { Badge, Button, ErrorText, FieldLabel, Icon, inputBase, inputState } from '../ui.jsx'
 
 export default function Questionnaire({
   answers,
@@ -36,6 +38,12 @@ export default function Questionnaire({
   const set = (field) => (value) => {
     onChange({ [field]: value })
     if (errors[field]) setErrors(({ [field]: _removed, ...rest }) => rest)
+  }
+
+  // Typing your own code stops the auto-fill from the description (see HsChapterSuggest).
+  const setHsCode = (value) => {
+    onChange({ hsCode: value, hsCodeAuto: false })
+    if (errors.hsCode) setErrors(({ hsCode: _removed, ...rest }) => rest)
   }
 
   const next = () => {
@@ -73,7 +81,7 @@ export default function Questionnaire({
           e.preventDefault()
           next()
         }}
-        className="rounded-3xl border border-mist bg-white p-5 shadow-[0_10px_30px_-14px_rgba(16,42,67,.16)] sm:p-8"
+        className="rounded-3xl border border-mist bg-white p-5 shadow-[0_10px_30px_-14px_rgba(46,16,101,.16)] sm:p-8"
         aria-describedby="q-intro"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -130,15 +138,28 @@ export default function Questionnaire({
                 error={errors.productDescription}
                 maxLength={160}
               />
+              <HsChapterSuggest
+                category={answers.productCategory}
+                description={answers.productDescription}
+                hsCode={answers.hsCode}
+                hsCodeAuto={Boolean(answers.hsCodeAuto)}
+                chapter={answers.hsChapter ?? ''}
+                manual={Boolean(answers.hsChapterManual)}
+                onChange={onChange}
+              />
               <TextField
                 field="hsCode"
                 label="Known HS code"
                 optional
-                hint="If you already use one. 6–10 digits, dots allowed."
+                hint={
+                  answers.hsCodeAuto
+                    ? 'Auto-filled with the suggested HS chapter above — illustrative only. Replace it with your full code if you have one.'
+                    : 'If you already use one. 2, 4 or 6–10 digits, dots allowed — or leave blank to auto-fill the chapter from your description.'
+                }
                 placeholder="e.g. 7323.93"
                 inputMode="decimal"
                 value={answers.hsCode}
-                onChange={set('hsCode')}
+                onChange={setHsCode}
                 error={errors.hsCode}
                 className="sm:max-w-xs"
               />
@@ -262,29 +283,141 @@ export default function Questionnaire({
   )
 }
 
+// ---------- HS chapter suggestion (2 digits only) ----------
+
+function useDebounced(value, ms) {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), ms)
+    return () => clearTimeout(t)
+  }, [value, ms])
+  return debounced
+}
+
+/*
+  Suggests a 2-digit HS CHAPTER from hs_code_list.txt. The automatic suggestion is
+  derived (never stored), so it can't overwrite a manual choice or the user's own
+  6–10 digit HS code, which stays in its own field.
+*/
+function HsChapterSuggest({ category, description, hsCode, hsCodeAuto, chapter, manual, onChange }) {
+  const id = useId()
+  const debouncedDescription = useDebounced(description, 300)
+  const result = useMemo(
+    () => suggestHsChapters({ category, description: debouncedDescription }, HS_INDEX),
+    [category, debouncedDescription],
+  )
+  const auto = result.status === 'clear' ? result.suggestions[0].chapter : ''
+  const effective = manual ? chapter : auto
+  const info = effective ? HS_INDEX.byChapter.get(effective) : null
+  const codeChapter = hsCode && !hsCodeAuto && isValidHsCode(hsCode) ? normalizeHsCode(hsCode).slice(0, 2) : ''
+
+  // Auto-fill "Known HS code" with the suggested chapter, unless the user typed their own code.
+  const latest = useRef({ hsCode, hsCodeAuto, onChange })
+  latest.current = { hsCode, hsCodeAuto, onChange }
+  useEffect(() => {
+    const { hsCode: code, hsCodeAuto: auto, onChange: update } = latest.current
+    if (code && !auto) return
+    if ((code || '') !== effective) update({ hsCode: effective, hsCodeAuto: Boolean(effective) })
+  }, [effective])
+
+  const choose = (value) => onChange({ hsChapter: value, hsChapterManual: true })
+  const resetToAuto = () => onChange({ hsChapter: '', hsChapterManual: false })
+
+  return (
+    <div role="group" aria-labelledby={`${id}-label`} aria-describedby={`${id}-hint`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p id={`${id}-label`} className="text-sm font-semibold text-navy">
+          Suggested HS chapter <span className="font-normal text-slate-500">(2 digits)</span>
+        </p>
+        {info && <Badge tone={manual ? 'slate' : 'brand'}>{manual ? 'Chosen by you' : 'Auto-suggested'}</Badge>}
+      </div>
+      <p id={`${id}-hint`} className="text-sm text-slate-500">
+        Auto-populated from your category and description. A chapter is only the first two digits of an HS code — a
+        starting point to confirm with a customs broker, not a classification.
+      </p>
+
+      <div aria-live="polite" className="mt-2 rounded-xl border border-mist bg-ice/60 p-3">
+        {info ? (
+          <div key={info.chapter} className="flex animate-fade-in items-start gap-3">
+            <span className="font-display flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-lg font-extrabold text-brand-700 tabular-nums ring-1 ring-brand-200">
+              {info.chapter}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-navy">Chapter {info.chapter}</p>
+              <p className="line-clamp-2 text-sm text-slate-600" title={info.description}>
+                {info.description}
+              </p>
+            </div>
+          </div>
+        ) : manual ? (
+          <p className="text-sm text-slate-600">No chapter selected — you chose not to use a suggestion.</p>
+        ) : result.status === 'ambiguous' ? (
+          <>
+            <p className="text-sm text-slate-600">A few chapters could fit — choose the closest:</p>
+            <div className="mt-2 grid gap-2">
+              {result.suggestions.map((s) => (
+                <button
+                  key={s.chapter}
+                  type="button"
+                  onClick={() => choose(s.chapter)}
+                  className="flex min-w-0 items-start gap-2.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-left text-sm transition-all duration-200 hover:-translate-y-px hover:border-brand-400 hover:shadow-sm"
+                >
+                  <span className="font-bold text-brand-700 tabular-nums">{s.chapter}</span>
+                  <span className="line-clamp-2 min-w-0 text-slate-700">{s.description}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        ) : result.status === 'none' ? (
+          <p className="text-sm text-slate-600">No confident chapter match — please select manually.</p>
+        ) : (
+          <p className="text-sm text-slate-500">Choose a category or describe the product to see a suggested chapter.</p>
+        )}
+      </div>
+
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <label htmlFor={`${id}-select`} className="sr-only">
+          Choose an HS chapter manually
+        </label>
+        <select
+          id={`${id}-select`}
+          value={manual ? chapter || 'none' : ''}
+          onChange={(e) => {
+            const v = e.target.value
+            if (v === '') resetToAuto()
+            else choose(v === 'none' ? '' : v)
+          }}
+          className="h-10 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm text-slate-700 transition-shadow hover:border-slate-400 focus:border-brand-700 focus:ring-2 focus:ring-brand-200 focus:outline-none sm:max-w-sm"
+        >
+          <option value="">{manual ? 'Use automatic suggestion' : 'Choose a chapter manually…'}</option>
+          <option value="none">No chapter / not sure</option>
+          {HS_INDEX.chapters
+            .filter((c) => !c.reserved)
+            .map((c) => (
+              <option key={c.chapter} value={c.chapter}>
+                {c.chapter} — {c.description.length > 70 ? `${c.description.slice(0, 68)}…` : c.description}
+              </option>
+            ))}
+        </select>
+        {manual && (
+          <button type="button" onClick={resetToAuto} className="text-sm font-medium text-brand-700 underline-offset-2 hover:underline">
+            Use automatic suggestion
+          </button>
+        )}
+      </div>
+
+      {codeChapter && effective && (
+        <p className={`mt-2 text-xs ${codeChapter === effective ? 'text-emerald-700' : 'text-amber-800'}`}>
+          {codeChapter === effective
+            ? `Your HS code below starts with chapter ${codeChapter}, consistent with this chapter.`
+            : `Your HS code below starts with chapter ${codeChapter}, not ${effective}. Your code is kept as entered — worth confirming which is right with a broker.`}
+        </p>
+      )}
+    </div>
+  )
+}
+
 // ---------- Form fields ----------
-
-const inputBase =
-  'mt-1.5 h-11 w-full rounded-xl border bg-white transition-shadow px-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2'
-const inputState = (error) =>
-  error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-200' : 'border-slate-300 hover:border-slate-400 focus:border-brand-700 focus:ring-brand-200'
-
-function FieldLabel({ htmlFor, label, optional, as: Tag = 'label' }) {
-  return (
-    <Tag htmlFor={htmlFor} className="text-sm font-semibold text-navy">
-      {label} {optional && <span className="font-normal text-slate-500">(optional)</span>}
-    </Tag>
-  )
-}
-
-function ErrorText({ id, error }) {
-  if (!error) return null
-  return (
-    <p id={id} className="mt-1.5 text-sm text-rose-700">
-      {error}
-    </p>
-  )
-}
 
 function SelectField({ field, label, options, value, onChange, error }) {
   const id = useId()

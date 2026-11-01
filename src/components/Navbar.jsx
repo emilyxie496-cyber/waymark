@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { NAV_LINKS } from '../data/content.js'
 import { Button, Icon, Logo } from './ui.jsx'
 
-export default function Navbar({ onOpenDialog }) {
+export default function Navbar({ onOpenDialog, onOpenPage }) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -45,7 +45,8 @@ export default function Navbar({ onOpenDialog }) {
         className={cls}
         onClick={() => {
           setOpen(false)
-          onOpenDialog(item.target)
+          if (item.type === 'page') onOpenPage(item.target)
+          else onOpenDialog(item.target)
         }}
       >
         {item.label}
@@ -74,10 +75,7 @@ export default function Navbar({ onOpenDialog }) {
         <div className="flex items-center gap-1.5">
           {/* Wrapper controls visibility so it doesn't fight the Button's own display class */}
           <div className="hidden items-center gap-1.5 sm:flex">
-            <Button variant="ghost" size="sm" onClick={() => onOpenDialog('signIn')}>
-              Sign in
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => onOpenDialog('signUp')}>
+            <Button variant="ghost" size="sm" onClick={() => onOpenPage('signup')}>
               Sign up
             </Button>
             <Button variant="glow" size="sm" onClick={() => onOpenDialog('discovery')}>
@@ -104,11 +102,8 @@ export default function Navbar({ onOpenDialog }) {
               <li key={item.label}>{renderLink(item, true)}</li>
             ))}
           </ul>
-          <div className="mx-auto grid max-w-7xl grid-cols-3 gap-2 border-t border-slate-200 px-4 py-3 sm:hidden">
-            <Button variant="secondary" size="sm" onClick={() => (setOpen(false), onOpenDialog('signIn'))}>
-              Sign in
-            </Button>
-            <Button variant="secondary" size="sm" onClick={() => (setOpen(false), onOpenDialog('signUp'))}>
+          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-2 border-t border-slate-200 px-4 py-3 sm:hidden">
+            <Button variant="secondary" size="sm" onClick={() => (setOpen(false), onOpenPage('signup'))}>
               Sign up
             </Button>
             <Button variant="glow" size="sm" onClick={() => (setOpen(false), onOpenDialog('discovery'))}>

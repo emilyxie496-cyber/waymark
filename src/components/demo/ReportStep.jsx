@@ -25,7 +25,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
 
   const inputs = [
     ['Product category', labelOf(PRODUCT_CATEGORIES, answers.productCategory)],
-    ['HS code', answers.hsCode || 'Not provided'],
+    ['HS code', answers.hsCodeAuto ? `Chapter ${answers.hsCode} (auto-filled, unverified)` : answers.hsCode || 'Not provided'],
     ['Main sourcing region', `${labelOf(REGIONS, answers.sourcingRegion)} (${labelOf(REGION_SHARES, answers.regionShare)} of imports)`],
     ['Supplier concentration', labelOf(CONCENTRATION, answers.supplierConcentration)],
     ['Lead time / buffer', `${labelOf(LEAD_TIMES, answers.leadTime)} / ${labelOf(BUFFERS, answers.inventoryBuffer, 'Not provided')}`],
@@ -45,7 +45,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
   const actions = [
     answers.supplierConcentration === 'single' &&
       'Request quotes from one or two alternative suppliers to replace the fictional Supplier B assumptions with real figures.',
-    !answers.hsCode && 'Confirm HS classification with a licensed customs broker or official CBSA guidance.',
+    (!answers.hsCode || answers.hsCodeAuto) && 'Confirm HS classification with a licensed customs broker or official CBSA guidance.',
     scenario.tariffEnabled && 'Check currently applicable tariff treatment from official sources before acting on tariff results.',
     resolved.bufferDays === null && 'Measure typical days of stock on hand so delay impact can be estimated properly.',
     sc.uncoveredDays > 0 && `Review reorder points: a ${scenario.delayDays}-day delay leaves about ${sc.uncoveredDays} days uncovered.`,
@@ -66,7 +66,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
         </Button>
       </div>
 
-      <article className="relative overflow-hidden rounded-3xl border border-mist bg-white p-6 shadow-[0_20px_50px_-24px_rgba(16,42,67,.25)] sm:p-12 print:overflow-visible print:rounded-none print:border-0 print:p-0 print:shadow-none">
+      <article className="relative overflow-hidden rounded-3xl border border-mist bg-white p-6 shadow-[0_20px_50px_-24px_rgba(46,16,101,.25)] sm:p-12 print:overflow-visible print:rounded-none print:border-0 print:p-0 print:shadow-none">
         <span className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-teal via-ocean to-navy [print-color-adjust:exact] print:hidden" aria-hidden="true" />
         <header className="flex flex-col gap-4 border-b border-mist pb-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -153,6 +153,11 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
                 {Math.round(A.freightFactor * 100)}% of current per unit, {money(A.onboardingCost)} onboarding,{' '}
                 {altSupplier.leadTimeDays}-day lead time; {strategy.altShare}% of main-region volume shifted
               </li>
+              <li>
+                Why {altSupplier.country}: highest score on a rule-based shortlist (trade access, transit time, cost,
+                diversification from {altSupplier.origin}). {altSupplier.reasons[0].text} Runner-up:{' '}
+                {altSupplier.runnerUp.label}.
+              </li>
               <li>Expedited freight ≈ {E.costMultiplier}× standard cost per unit (fictional)</li>
             </ul>
           </ReportSection>
@@ -191,7 +196,7 @@ export default function ReportStep({ answers, model, scenario, strategy, isSampl
         </div>
 
         <footer className="mt-12 border-t border-mist pt-4 text-xs text-slate-500">
-          Waymark hackathon prototype · Illustrative data · Not financial, legal, customs or compliance advice.
+          Not financial, legal, customs or compliance advice.
         </footer>
       </article>
 

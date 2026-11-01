@@ -12,7 +12,7 @@ export default function Hero({ onOpenDemo }) {
       {/* faint star-free depth grid */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(rgba(16,47,76,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(16,47,76,.5)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(70%_60%_at_50%_40%,black,transparent)]"
+        className="absolute inset-0 -z-10 opacity-[0.05] [background-image:linear-gradient(rgba(46,16,101,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(46,16,101,.5)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(70%_60%_at_50%_40%,black,transparent)]"
       />
       <div className="mx-auto grid min-h-[calc(100svh-4rem)] max-w-7xl items-center gap-6 px-4 pt-10 pb-16 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:gap-4 lg:px-8 lg:pt-6">
         <div className="relative z-10 animate-fade-up">
@@ -20,8 +20,8 @@ export default function Hero({ onOpenDemo }) {
             <Icon name="sparkles" className="h-3.5 w-3.5" /> AI-assisted trade planning for SMEs
           </Badge>
           <h1 id="hero-title" className="mt-6 text-5xl font-extrabold text-navy sm:text-6xl lg:text-[5.25rem] lg:leading-[1.02]">
-            Plan. <span className="bg-gradient-to-r from-teal-600 to-ocean bg-clip-text text-transparent">Pivot.</span>
-            <br className="hidden sm:block" /> Grow.
+            Plan. <span className="bg-gradient-to-r from-brand-700 to-brand-500 bg-clip-text text-transparent">Pivot.</span>
+            <br className="hidden sm:block" /> Progress.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-slate-600 sm:text-xl">
             Understand your supply-chain exposure, explore tariff and freight-cost scenarios, and compare practical
@@ -38,10 +38,6 @@ export default function Hero({ onOpenDemo }) {
           <p className="mt-5 text-sm text-slate-500">
             Lower-data onboarding: approximate ranges first, no CSV upload to get started.
           </p>
-          <p className="mt-8 inline-flex items-center gap-2 rounded-full border border-dashed border-slate-300 px-3 py-1 text-xs font-medium text-slate-500">
-            <span className="h-1.5 w-1.5 rounded-full bg-sun" aria-hidden="true" />
-            Hackathon prototype · Illustrative data
-          </p>
         </div>
 
         <div className="relative -mx-4 aspect-square max-h-[78svh] w-[calc(100%+2rem)] animate-fade-in sm:mx-auto sm:w-full sm:max-w-[640px] lg:max-w-none">
@@ -49,10 +45,10 @@ export default function Hero({ onOpenDemo }) {
           <GlobeStage className="h-full w-full" />
           <ul className="pointer-events-none absolute right-4 bottom-4 flex flex-col gap-1 rounded-xl border border-slate-200 bg-white/85 px-3 py-2 text-[11px] text-slate-600 shadow-lg shadow-slate-900/5 backdrop-blur-sm sm:right-6 sm:bottom-8">
             <li className="flex items-center gap-2">
-              <span className="h-0.5 w-4 rounded bg-teal" aria-hidden="true" /> Ocean lanes
+              <Icon name="ship" className="h-3.5 w-4 text-brand-600" /> Cargo ships
             </li>
             <li className="flex items-center gap-2">
-              <span className="h-0.5 w-4 border-t-2 border-dotted border-sun" aria-hidden="true" /> Air freight
+              <Icon name="plane" className="h-3.5 w-4 text-amber-500" /> Air freight
             </li>
             <li className="flex items-center gap-2">
               <span className="h-0.5 w-4 border-t-2 border-dashed border-slate-400" aria-hidden="true" /> Rail

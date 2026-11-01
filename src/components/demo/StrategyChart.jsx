@@ -2,7 +2,7 @@ import { money, moneyCompact } from '../../utils/format.js'
 
 export const COMPONENT_META = [
   { key: 'freight', label: 'Freight change', color: 'bg-brand-700' },
-  { key: 'tariff', label: 'Hypothetical tariff', color: 'bg-teal' },
+  { key: 'tariff', label: 'Hypothetical tariff', color: 'bg-brand-300' },
   { key: 'delay', label: 'Delay shortfall', color: 'bg-amber-400' },
   { key: 'response', label: 'Response cost', color: 'bg-slate-400' },
 ]
