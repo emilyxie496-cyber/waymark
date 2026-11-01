@@ -17,7 +17,8 @@ import { Panel, StepHeading, StepNav } from './DemoWorkspace.jsx'
 
 export default function ProfileStep({ answers, model, isSample, headingRef, onBack, onNext, onEdit }) {
   const { profile, resolved } = model
-  const classification = suggestChapter(answers.productDescription, answers.hsCode)
+  // An auto-filled chapter came from a suggestion, so don't compare it with itself
+  const classification = suggestChapter(answers.productDescription, answers.hsCodeAuto ? '' : answers.hsCode)
 
   return (
     <div>
@@ -37,7 +38,7 @@ export default function ProfileStep({ answers, model, isSample, headingRef, onBa
           rows={[
             ['Category', labelOf(PRODUCT_CATEGORIES, answers.productCategory)],
             ['Description', answers.productDescription || 'Not provided'],
-            ['HS code', answers.hsCode || 'Not provided'],
+            ['HS code', answers.hsCodeAuto ? `Chapter ${answers.hsCode} (auto-filled)` : answers.hsCode || 'Not provided'],
           ]}
         />
         <SummaryCard
@@ -152,7 +153,7 @@ export default function ProfileStep({ answers, model, isSample, headingRef, onBa
 
 function SummaryCard({ icon, title, rows }) {
   return (
-    <section className="rounded-3xl border border-mist bg-white p-5 shadow-[0_10px_30px_-14px_rgba(16,42,67,.14)]">
+    <section className="rounded-3xl border border-mist bg-white p-5 shadow-[0_10px_30px_-14px_rgba(46,16,101,.14)]">
       <h2 className="flex items-center gap-2 font-bold text-navy">
         <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-teal/15 to-ocean/15 text-ocean">
           <Icon name={icon} className="h-4 w-4" />

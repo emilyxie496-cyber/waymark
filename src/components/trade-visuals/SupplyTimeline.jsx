@@ -18,7 +18,7 @@ export default function SupplyTimeline({ leadTimeDays, delayDays, bufferDays, un
         <Row label="Delayed order" days={leadTimeDays + delayDays}>
           <span className={`${bar} rounded-l-md bg-gradient-to-r from-teal to-ocean`} style={{ width: pct(leadTimeDays) }} />
           <span
-            className={`${bar} bg-[repeating-linear-gradient(135deg,rgba(20,184,166,.35)_0_6px,rgba(20,184,166,.15)_6px_12px)]`}
+            className={`${bar} bg-[repeating-linear-gradient(135deg,rgba(139,92,246,.35)_0_6px,rgba(139,92,246,.15)_6px_12px)]`}
             style={{ width: pct(covered) }}
             title={`${covered} delay days covered by inventory`}
           />

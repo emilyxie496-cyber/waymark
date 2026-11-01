@@ -134,7 +134,7 @@ export default function DemoWorkspace({ initialMode, onExit }) {
                     aria-current={active ? 'step' : undefined}
                     className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-300 ${
                       active
-                        ? 'bg-teal text-midnight shadow-md shadow-teal/20'
+                        ? 'bg-brand-600 text-white shadow-md shadow-brand-500/30'
                         : reachable
                           ? 'bg-white/8 text-slate-200 ring-1 ring-white/15 hover:bg-white/15 hover:text-white'
                           : 'cursor-not-allowed bg-white/5 text-slate-500'
@@ -220,7 +220,7 @@ export function StepNav({ onBack, onNext, nextLabel = 'Next', extra }) {
 
 export function Panel({ title, children, className = '', aside }) {
   return (
-    <section className={`rounded-3xl border border-mist bg-white p-5 shadow-[0_1px_2px_rgba(16,42,67,.04),0_10px_30px_-14px_rgba(16,42,67,.14)] sm:p-6 print-avoid-break ${className}`}>
+    <section className={`rounded-3xl border border-mist bg-white p-5 shadow-[0_1px_2px_rgba(46,16,101,.04),0_10px_30px_-14px_rgba(46,16,101,.14)] sm:p-6 print-avoid-break ${className}`}>
       {(title || aside) && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           {title && <h2 className="text-base font-bold text-navy">{title}</h2>}

@@ -12,7 +12,7 @@ export function Audience() {
           We begin with importing SMEs that don't have a dedicated supply-chain risk team. Exporters come later.
         </SectionHeading>
         <div className="mt-12 grid gap-4 md:grid-cols-2">
-          <Reveal as="article" className="rounded-3xl border border-mist bg-white p-7 shadow-[0_12px_32px_-12px_rgba(16,42,67,.12)]">
+          <Reveal as="article" className="rounded-3xl border border-mist bg-white p-7 shadow-[0_12px_32px_-12px_rgba(46,16,101,.12)]">
             <div className="flex items-center justify-between">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
                 <Icon name="ship" />
@@ -99,7 +99,7 @@ export function Faq() {
     <section id="faq" className="py-20 sm:py-28" aria-labelledby="faq-title">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <SectionHeading id="faq-title" eyebrow="FAQ" title="Common questions" center />
-        <div className="mt-10 divide-y divide-mist overflow-hidden rounded-3xl border border-mist bg-white shadow-[0_12px_32px_-12px_rgba(16,42,67,.10)]">
+        <div className="mt-10 divide-y divide-mist overflow-hidden rounded-3xl border border-mist bg-white shadow-[0_12px_32px_-12px_rgba(46,16,101,.10)]">
           {FAQS.map((f, i) => {
             const open = openIndex === i
             const btnId = `${baseId}-q${i}`

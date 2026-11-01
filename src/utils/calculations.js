@@ -108,6 +108,7 @@ export function assessProfile(answers, resolved) {
 
   const missing = []
   if (!answers.hsCode) missing.push('HS code — classification and tariff treatment not confirmed')
+  else if (answers.hsCodeAuto) missing.push('HS code — only a chapter auto-filled from the description; full code and tariff treatment not confirmed')
   if (resolved.bufferDays === null) missing.push('Inventory buffer — delay impact uses 0 days of cover')
   if (!answers.productDescription) missing.push('Product description — needed for any classification suggestion')
   // Always-missing items for a questionnaire-only profile

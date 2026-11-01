@@ -1,12 +1,13 @@
 // Simple validation for the questionnaire and newsletter.
 
-// Accepts 6–10 digits, optionally separated by dots or spaces (e.g. 7323.93 or 7323.93.00.10).
+// Accepts a 2-digit chapter, 4-digit heading or 6–10 digit code, optionally
+// separated by dots or spaces (e.g. 73, 7323, 7323.93 or 7323.93.00.10).
 export function normalizeHsCode(value) {
   return value.replace(/[.\s]/g, '')
 }
 export function isValidHsCode(value) {
   if (!value) return true // optional
-  return /^[\d.\s]+$/.test(value) && /^\d{6,10}$/.test(normalizeHsCode(value))
+  return /^[\d.\s]+$/.test(value) && /^(\d{2}|\d{4}|\d{6,10})$/.test(normalizeHsCode(value))
 }
 
 export const QUESTIONNAIRE_STEPS = [
@@ -32,7 +33,7 @@ export function validateStep(stepIndex, answers) {
     if (REQUIRED[field] && !answers[field]) errors[field] = REQUIRED[field]
   }
   if (stepIndex === 0 && !isValidHsCode(answers.hsCode)) {
-    errors.hsCode = 'Enter 6–10 digits (dots allowed), or leave blank.'
+    errors.hsCode = 'Enter a 2-digit chapter, 4-digit heading or 6–10 digit code (dots allowed), or leave blank.'
   }
   if (stepIndex === 0 && answers.productDescription.length > 160) {
     errors.productDescription = 'Keep the description under 160 characters.'

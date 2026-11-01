@@ -15,3 +15,7 @@ export const signedMoney = (n) => {
   return (r > 0 ? '+' : '−') + cad.format(Math.abs(r))
 }
 export const percent = (n, digits = 1) => `${(n * 100).toFixed(digits)}%`
+
+/** Amount in a given currency with cents, e.g. currency(1234.5, 'USD') → "US$1,234.50". */
+export const currency = (n, code) =>
+  new Intl.NumberFormat('en-CA', { style: 'currency', currency: code, minimumFractionDigits: 2 }).format(n)

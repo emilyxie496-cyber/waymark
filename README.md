@@ -1,6 +1,6 @@
 # Waymark — Hackathon Prototype
 
-**Plan. Pivot. Grow.** A landing page and an interactive demo for Waymark, a proposed supply-chain risk and cost intelligence platform for Canadian importing SMEs.
+**Plan. Pivot. Progress.** A landing page and an interactive demo for Waymark, a proposed supply-chain risk and cost intelligence platform for Canadian importing SMEs.
 
 > Hackathon prototype · all companies, suppliers, rates and results are fictional or illustrative. No AI service, tariff feed, backend or account system is connected.
 
@@ -123,3 +123,13 @@ No images, videos or 3D models are used. All illustrations are hand-written SVG,
 - Supplier B, its prices and lead times, and the expedite multiplier are fictional.
 - Accounts, the discovery call, the newsletter, tariff audits, the API and automated monitoring are not implemented. The UI labels them as unavailable or planned.
 - Answers are kept in memory only. They are cleared on reset or when the tab is closed, and they are never sent anywhere.
+
+## Merged from waymark-branch2
+
+- **Full-page views** (hash routes, no router): `#company` (Our Story), `#customer`, `#signup` (14-day trial form, nothing is sent), `#tariffs` (duty-exposure worksheet, `src/utils/tariff.js`; rates stay UNVERIFIED until the user enters a checked rate).
+- **HS auto-fill:** the "Known HS code" field fills with the suggested 2-digit chapter until the user types their own code (`hsCodeAuto`). HS codes may now be 2, 4 or 6–10 digits. Keyword table for the Tariffs page and the landing-page card: `src/data/hsChapterKeywords.js`.
+- **Colours:** branch2's white & violet palette, applied through the existing `@theme` tokens in `src/index.css`, so all animations are kept.
+
+## Why "Supplier B"?
+
+The alternative supplier is picked by a transparent, rule-based shortlist in `src/data/demoData.js` (`ALT_CRITERIA`, `ALT_CANDIDATES`, `rankAltSuppliers`). Each candidate location is scored 1–5 on trade access to Canada, transit time, cost and diversification from the current origin, with weights 30/30/20/20. The current origin is excluded. The Compare step shows the route comparison, the reasons and the full scorecard. The scores are illustrative judgements, not market data.
